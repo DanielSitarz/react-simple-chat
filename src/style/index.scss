@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+$mainColor: #FFB74D;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.root{
+  height: 100%;
+  padding: 1rem;
+  font-family: 'Roboto', sans-serif;        
+}
+
+.chat{
+  width: 30rem;
+  height: 30rem;
+}
+
+h1{
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.chatBox{
+  display: flex;
+  flex-direction: column;  
+  width: 100%;
+  height: 100%;
+  border: 0.2rem solid $mainColor;
+  border-bottom-width: 0.5rem;
+  border-radius: 0.25rem;      
+  header{    
+    flex: 1;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    background-color: $mainColor;    
+    padding-left: 1rem;
+    
+    z-index: 1;    
+    h2{
+      font-size: 1.25rem;
+      color: white;
+      font-weight: bold;
+    }
+  }
+  .chatMessages{                    
+    flex: 8;
+    overflow-y: scroll;
+    font-size: 1.25rem;
+    ul{      
+      list-style: none;
+      padding: 0.8rem 1rem 1rem 1rem;
+      margin: 0;    
+      li{
+        background-color: #e9ebee;
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;      
+        line-height: 1.25;        
+        &:nth-child(2n){
+          background-color: rgb(84, 199, 236);   
+          color: white;
+        }
+        span{
+          padding-right: 0.25rem;
+        }
+      }        
+    }
+  }  
+  .chatControl{
+    flex: 1;
+    display: flex;        
+    position: relative;        
+    border-top: 2px solid $mainColor;        
+    input{      
+      flex: 3;      
+      width: 100%;
+      border: none;      
+      font-size: 2rem;
+      text-indent: 1rem;
+      padding-right: 0.5rem;
+    }
+    button{   
+      flex: 1;      
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 700;            
+      background: #03A9F4;        
+      color: #ffffff;      
+      text-decoration: none;      
+      &:hover {
+        background: #3cb0fd;        
+        text-decoration: none;
+      }
+      &:active{
+        background: #1cb05d;        
+      }
+    } 
+  }     
+}
+
+.messagesData{
+    position: absolute;
+    right: 0;
+    top: 0;    
+    width: 40%;
+    padding: 1rem;
+}
+
+.nameInputBox{  
+  display: flex;
+  margin-bottom: 0.25rem;
+  label, input{
+    font-size: 1rem;    
+    padding: 0.25rem;
+  }  
+  label{
+    flex: 1;
+    font-weight: 700;
+  }
+  input {   
+    flex: 3;         
+    background-color: transparent;    
+    padding-right: 0.5rem;    
+  }
+}
+
+.languageSelectBox{
+  width: 30rem;
+  display: flex;
+  flex-direction: column;
+  ol{
+    display: flex;
+    list-style: none;
+    li{
+      display: flex;
+      flex: 1;        
+      button{        
+        flex: 1;        
+        height: 2rem;
+      }
+    }
+  }
+}
