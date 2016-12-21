@@ -92,7 +92,13 @@ h1{
       border-radius: 0.5rem;        
       padding: 1.25rem 0.5rem 0.75rem 1rem;
       line-height: 1.5;  
-    }
+      &.mine{
+        background-color: rgb(84, 199, 236);
+        p{
+          color: white;
+        }
+      }
+    }    
   }  
   .chatMessages{
     flex: 8;

@@ -17,7 +17,7 @@ class ChatMessageGroup extends React.Component {
         <p className={styles.chatMessageGroupSender}>
           <strong>{this.props.messages[0].sender}</strong>
         </p>
-        <div className={styles.chatMessageGroupMessages}>
+        <div className={styles.chatMessageGroupMessages + " " + (this.props.messages[0].sender == window.yourName ? styles.mine : "")}>
           {msgs}
         </div>
       </li>

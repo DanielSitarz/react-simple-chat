@@ -83,6 +83,8 @@ class App extends Component {
       userName: name,
       currentStep: 1,
     });
+
+    window.yourName = name;
   }  
   render() {
 
