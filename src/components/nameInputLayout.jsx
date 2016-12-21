@@ -20,21 +20,19 @@ class NameInputLayout extends React.Component {
   }
   render() {
     return (
-        <form className={styles.nameInputLayout}>
-          <div className={styles.content}>
-            <label 
-              htmlFor="yourName">
-              {Language.getLang().texts.chatNameInput.yourName}: 
-            </label>
+        <div className={styles.nameInputLayout}>
+          <form action="" className={styles.box}> 
+            <label htmlFor="yourName">Enter your name:</label>
             <input 
-              maxLength="32" 
-              autoFocus onFocus={this.handleOnFocus} 
-              name="yourName" type="text" 
-              defaultValue={this.defaultName}
-              ref="userName" />
-          </div>          
-          <button onClick={this.handleOnNameAccept}>Enter</button>
-        </form>
+                maxLength="32" 
+                minLength="1"
+                autoFocus onFocus={this.handleOnFocus} 
+                name="yourName" type="text" 
+                defaultValue={this.defaultName}
+                ref="userName" />
+            <button onClick={this.handleOnNameAccept}>OK, select room</button>
+          </form>       
+        </div>
     )
   }
 }

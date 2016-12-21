@@ -22,7 +22,9 @@ class ChatControl extends React.Component {
   render() {
     return (
       <form className={styles.chatControl} onSubmit={this.handleSubmit} autoComplete="off">
-          <input  placeholder={Language.getLang().texts.chatControl.inputPlaceholder + "..."} ref="message" />
+          <input             
+            placeholder={Language.getLang().texts.chatControl.inputPlaceholder + "..."} 
+            ref="message" />
           <button type="submit">{Language.getLang().texts.chatControl.send}</button>
         </form>
     )

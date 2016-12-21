@@ -1,4 +1,5 @@
 import styles from './style/index.scss';
+import transitionStyle from './style/transitions.scss';
 
 import io from 'socket.io-client';
 import React, {Component} from 'react';
@@ -6,6 +7,8 @@ import Header from './components/header.jsx';
 import ChatBox from './components/chatBox.jsx';
 import LanguageSelectBox from './components/languageSelectBox.jsx'
 import NameInputLayout from './components/nameInputLayout';
+
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import Language from './language.js';
 
@@ -95,9 +98,14 @@ class App extends Component {
       <div className={styles.root}>
         <LanguageSelectBox 
           languageData={languageData} 
-          handleLangSelect={this.handleLangSelect}/>                 
+          handleLangSelect={this.handleLangSelect}/>
 
-        {stepElement}
+        <ReactCSSTransitionGroup
+          transitionName="example"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}>
+          {stepElement}
+        </ReactCSSTransitionGroup>
 
         <div className={styles.chat + " " + (this.state.currentStep == 0 ? styles.blurred : "")}>          
           <ChatBox 

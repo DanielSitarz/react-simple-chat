@@ -17,6 +17,7 @@ loaders.push({
 		'css'
 	]
 });
+
 // local scss modules
 loaders.push({
 	test: /\.scss$/,
