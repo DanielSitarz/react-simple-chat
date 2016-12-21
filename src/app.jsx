@@ -60,7 +60,7 @@ class App extends Component {
     });
   }
   onChatMessage(data){
-    const newMessage = this.createMessage(data.key, data.sender, data.msg);
+    const newMessage = this.createMessage(data.key, data.sender, data.msg);    
 
     this.pushNewMessage(newMessage);
   }
