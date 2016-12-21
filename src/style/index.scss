@@ -2,6 +2,11 @@
 
 $mainColor: #FFB74D;
 
+body, html, body > div{
+  height: 100%; 
+  width: 100%;
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -9,14 +14,38 @@ $mainColor: #FFB74D;
 }
 
 .root{
-  height: 100%;
-  padding: 1rem;
+  height: 100%;  
   font-family: 'Roboto', sans-serif;        
 }
 
-.chat{
-  width: 30rem;
-  height: 30rem;
+ button{     
+  border: none;
+  font-size: 1.6rem;
+  font-weight: 700;            
+  background: #03A9F4;        
+  color: #ffffff;      
+  text-decoration: none;      
+  &:hover {
+    background: #3cb0fd;        
+    text-decoration: none;
+  }
+  &:active{
+    background: #1cb05d;        
+  }
+} 
+
+.chat{  
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 1rem;
+  top: 2.2rem;
+  right: 1rem;
+  left: 1rem;  
+
+  &.blurred{
+    filter: blur(0.15rem);
+  }
 }
 
 h1{
@@ -87,20 +116,7 @@ h1{
       padding-right: 0.5rem;
     }
     button{   
-      flex: 1;      
-      border: none;
-      font-size: 1.6rem;
-      font-weight: 700;            
-      background: #03A9F4;        
-      color: #ffffff;      
-      text-decoration: none;      
-      &:hover {
-        background: #3cb0fd;        
-        text-decoration: none;
-      }
-      &:active{
-        background: #1cb05d;        
-      }
+      flex: 1;           
     } 
   }     
 }
@@ -113,26 +129,53 @@ h1{
     padding: 1rem;
 }
 
-.nameInputBox{  
+.nameInputLayout{  
+  position: absolute;  
   display: flex;
-  margin-bottom: 0.25rem;
-  label, input{
-    font-size: 1rem;    
-    padding: 0.25rem;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .80);
+  
+  margin-bottom: 0.25rem;  
+  
+  .content{    
+    display: flex;    
+    width: 50%;
+    margin: 0 auto;
+
+    color: white;    
+
+    label, input{
+      font-size: 1rem;    
+      padding: 1rem;
+      font-weight: 700;
+    }  
+    label{
+      flex: 1;      
+    }
+    input {   
+      flex: 3;      
+      color: white;   
+      background-color: transparent;    
+      border: 0.2rem solid white;      
+    } 
   }  
-  label{
-    flex: 1;
-    font-weight: 700;
-  }
-  input {   
-    flex: 3;         
-    background-color: transparent;    
-    padding-right: 0.5rem;    
+
+  button{
+    margin: 0 auto;
+    margin-top: 2rem;
+    width: 50%;
+    height: 2.5rem;
   }
 }
 
 .languageSelectBox{
-  width: 30rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
   ol{

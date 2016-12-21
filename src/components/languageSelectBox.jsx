@@ -25,8 +25,7 @@ class LanguageSelectBox extends React.Component {
   }
   render() {
     return (
-        <div className={styles.languageSelectBox}>
-            <p>{Language.getLang().texts.languageSelectBox.selectLanguage}:</p>
+        <div className={styles.languageSelectBox}>            
             <ol>{this.getLanguagesList()}</ol>
         </div>
     )

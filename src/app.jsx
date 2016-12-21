@@ -1,57 +1,72 @@
 import styles from './style/index.scss';
+
+import io from 'socket.io-client';
 import React, {Component} from 'react';
 import Header from './components/header.jsx';
 import ChatBox from './components/chatBox.jsx';
 import LanguageSelectBox from './components/languageSelectBox.jsx'
-import NameInputBox from './components/nameInputBox.jsx';
+import NameInputLayout from './components/nameInputLayout';
 
 import Language from './language.js';
 
-const title = "Little Chat";
-const roomName = "Positive Thinking";
+var roomName = "Positive Thinking";
 
-const messagesData = [{
-  key: "12345",
-  sender: "Daniel",
-  msg: "Hej :)"
-}, {
-  key: "123455",
-  sender: "Merry",
-  msg: "^^"
-}, {
-  key: "123451",
-  sender: "Daniel",
-  msg: "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation\""
-}];
+var messagesData = [];
 
 class App extends Component {
   constructor() {
-    super();
+    super();    
+
     this.state = {
       userName: "Anon",
       currentLangKey: "en",            
 
-      messages: messagesData,      
+      messages: messagesData,     
+
+      currentStep: 0, 
     }    
 
     window.currentLangKey = this.state.currentLangKey;
     
+    this.handlersSetup();
+    
+    this.socketSetup();
+  }
+  handlersSetup(){
     this.handleMessageSend = this.handleMessageSend.bind(this);
     this.handleLangSelect = this.handleLangSelect.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);    
   }
-  handleMessageSend(msg) {                
-    const newMessage = {
-      key: (new Date()).getTime(),
-      sender: this.state.userName,
+  socketSetup(){
+    this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');    
+
+    this.socket.on('chat message', this.onChatMessage.bind(this));         
+  }
+  createMessage(key, sender, msg){
+    return {
+      key: key,
+      sender: sender,
       msg: msg
     };
-
-    messagesData.push(newMessage);
+  }
+  pushNewMessage(newMsg){
+    messagesData.push(newMsg);
 
     this.setState({
       messages: messagesData
-    });                
+    });
+  }
+  onChatMessage(data){
+    const newMessage = this.createMessage(data.key, data.sender, data.msg);
+
+    this.pushNewMessage(newMessage);
+  }
+  handleMessageSend(msg) {
+    const newMessage = this.createMessage((new Date()).getTime(), this.state.userName, msg);
+
+    this.pushNewMessage(newMessage);
+
+    this.socket.emit('chat message', newMessage);
   }     
   handleLangSelect(langKey){        
     this.setState({
@@ -68,27 +83,16 @@ class App extends Component {
   render() {
     return (
       <div className={styles.root}>
-        <LanguageSelectBox languageData={languageData} handleLangSelect={this.handleLangSelect}/>        
+        <LanguageSelectBox languageData={languageData} handleLangSelect={this.handleLangSelect}/>                 
 
-        <Header title={Language.getLang().texts.appName} />        
+        <NameInputLayout handleNameChange={this.handleNameChange} userName={this.state.userName}/>
 
-        <div className={styles.chat}>
-          <NameInputBox handleNameChange={this.handleNameChange} userName={this.state.userName}/>
+        <div className={styles.chat + " " + (this.state.currentStep == 0 ? styles.blurred : "")}>          
           <ChatBox 
             roomName={roomName}                         
             handleSendMessage={this.handleMessageSend}             
             messages={this.state.messages} />
-        </div>
-        
-        <ol className={styles.messagesData}>
-        {
-          this.state.messages.map((a) => {
-            return(
-              <li key={a.key}>{JSON.stringify(a)}</li>
-            )
-          })
-        }
-        </ol>
+        </div>                
       </div>
     )
   }
