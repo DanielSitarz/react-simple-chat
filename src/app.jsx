@@ -35,7 +35,7 @@ class App extends Component {
   handlersSetup(){
     this.handleMessageSend = this.handleMessageSend.bind(this);
     this.handleLangSelect = this.handleLangSelect.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);    
+    this.handleNameAccept = this.handleNameAccept.bind(this);    
   }
   socketSetup(){
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');    
@@ -75,17 +75,29 @@ class App extends Component {
 
     window.currentLangKey = langKey;
   }  
-  handleNameChange(name){
+  handleNameAccept(name){
     this.setState({
-      userName: name
+      userName: name,
+      currentStep: 1,
     });
   }  
   render() {
+
+    let stepElement = null;
+
+    switch(this.state.currentStep){
+      case 0:
+        stepElement = <NameInputLayout handleNameAccept={this.handleNameAccept}/>
+      break;      
+    }
+
     return (
       <div className={styles.root}>
-        <LanguageSelectBox languageData={languageData} handleLangSelect={this.handleLangSelect}/>                 
+        <LanguageSelectBox 
+          languageData={languageData} 
+          handleLangSelect={this.handleLangSelect}/>                 
 
-        <NameInputLayout handleNameChange={this.handleNameChange} userName={this.state.userName}/>
+        {stepElement}
 
         <div className={styles.chat + " " + (this.state.currentStep == 0 ? styles.blurred : "")}>          
           <ChatBox 

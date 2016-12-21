@@ -6,20 +6,35 @@ import Language from '../language.js';
 class NameInputLayout extends React.Component {
   constructor(props){
     super(props);
-    this.handleChange = this.handleChange.bind(this);
+    
+    this.handleOnNameAccept = this.handleOnNameAccept.bind(this);
+
+    this.defaultName = "Anonymous";
+  }  
+  handleOnFocus(e){
+    e.target.select();
   }
-  handleChange(){
-    this.props.handleNameChange(this.refs.userName.value);
+  handleOnNameAccept(e){
+    e.preventDefault();
+    this.props.handleNameAccept(this.refs.userName.value);
   }
   render() {
     return (
-        <div className={styles.nameInputLayout}>
+        <form className={styles.nameInputLayout}>
           <div className={styles.content}>
-            <label htmlFor="yourName">{Language.getLang().texts.chatNameInput.yourName}: </label>
-            <input name="yourName" type="text" value={this.props.userName} onChange={this.handleChange} ref="userName" />            
+            <label 
+              htmlFor="yourName">
+              {Language.getLang().texts.chatNameInput.yourName}: 
+            </label>
+            <input 
+              maxLength="32" 
+              autoFocus onFocus={this.handleOnFocus} 
+              name="yourName" type="text" 
+              defaultValue={this.defaultName}
+              ref="userName" />
           </div>          
-          <button>Enter</button>
-        </div>
+          <button onClick={this.handleOnNameAccept}>Enter</button>
+        </form>
     )
   }
 }
