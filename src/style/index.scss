@@ -86,11 +86,12 @@ h1{
       left: 0.75rem;
       background-color: white;
       padding: 0 0.5rem;      
+      border-radius: 0.25rem;      
     }
     .chatMessageGroupMessages{      
       background-color: #e9ebee;
       border-radius: 0.5rem;        
-      padding: 1.25rem 0.5rem 0.75rem 1rem;
+      padding: 1.25rem 1rem 1rem 1rem;
       line-height: 1.5;  
       &.mine{
         background-color: rgb(84, 199, 236);
@@ -98,7 +99,11 @@ h1{
           color: white;
         }
       }
-    }    
+    }  
+    img{
+      max-width: 100%;
+      height: auto;
+    }  
   }  
   .chatMessages{
     flex: 8;

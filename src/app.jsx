@@ -14,7 +14,18 @@ import Language from './language.js';
 
 var roomName = "Positive Thinking";
 
-var messagesData = [];
+var messagesData = [
+  {
+    key: 0,
+    sender: "D",
+    msg: "Hello Cutie"
+  },
+  {
+    key: 1,
+    sender: "D",
+    msg: "https://www.youtube.com/watch?v=rT_I_GV_oEM"
+  }
+];
 
 class App extends Component {
   constructor() {
