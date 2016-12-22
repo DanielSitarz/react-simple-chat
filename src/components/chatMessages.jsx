@@ -12,32 +12,24 @@ class ChatMessages extends React.Component {
     chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
   }  
   render(){
-    let msgs = this.props.messages;
-    let previousSender = null;    
+    let msgs = this.props.messages;    
   
     let messagesGroups = [];
-    let messagesToGroup = [];
-
-    console.log(msgs);
+    let messagesToGroup = [];    
     
-    for(let i = 0; i < msgs.length;){               
-      while(1){                    
-        messagesToGroup.push(msgs[i]);
-
-        i++;                
-
-        if(i >= msgs.length) break;        
-        if(msgs[i].sender != msgs[i-1].sender) break;        
-      }                
-      if(messagesToGroup.length > 0){        
+    let i = 0;
+    while(i < msgs.length){
+      messagesToGroup.push(msgs[i]);
+      
+      if(msgs[i+1] == undefined || msgs[i].sender != msgs[i+1].sender) {
         messagesGroups.push(
           <ChatMessageGroup messages={messagesToGroup} key={messagesToGroup[0].key} />
         );
         messagesToGroup = [];
-      }                  
-    }
+      }
 
-    console.log(messagesGroups);
+      i++;
+    }
     
     return(
       <div className={styles.chatMessages} ref="chatMessagesBox">
