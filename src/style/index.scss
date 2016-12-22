@@ -103,7 +103,14 @@ h1{
     img{
       max-width: 100%;
       height: auto;
-    }  
+    }      
+
+    @media screen and (max-width: 800px){
+      img, iframe{
+        width: 100%;
+        
+      }
+    }
   }  
   .chatMessages{
     flex: 8;
