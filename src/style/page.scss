@@ -1,0 +1,15 @@
+$mainColor: #FFB74D;
+
+.page{
+  position: absolute;  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: $mainColor;
+
+  z-index: 1;
+}

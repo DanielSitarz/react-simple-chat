@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from '../style/index.scss';
+import styles from '../../style/index.scss';
 
-import Language from '../language.js';
+import {browserHistory} from 'react-router';
 
-class NameInputLayout extends React.Component {
+class NameInputContainer extends React.Component {
   constructor(props){
     super(props);
     
@@ -15,9 +15,10 @@ class NameInputLayout extends React.Component {
     e.target.select();
   }
   handleOnNameAccept(e){
-    e.preventDefault();
-    this.props.handleNameAccept(this.refs.userName.value);
-  }
+    e.preventDefault();        
+    browserHistory.push("/rooms");
+    
+  }   
   render() {
     return (
         <div className={styles.nameInputLayout}>
@@ -37,4 +38,4 @@ class NameInputLayout extends React.Component {
   }
 }
 
-export default NameInputLayout;
+export default NameInputContainer;

@@ -15,6 +15,29 @@
 
   .example-leave.example-leave-active {
     opacity: 0.01;
-    transition: opacity 500ms linear;
+    transition: all 500ms ease-in;
+  }
+}
+
+
+:global{
+  .messageEnter-enter {    
+    opacity: 0.01;
+    width: 0;
+  }
+
+  .messageEnter-enter.messageEnter-enter-active {
+    opacity: 1;
+    width: 100%;
+    transition: all 250ms ease-in;
+  }
+
+  .messageEnter-leave {
+    opacity: 1;
+  }
+
+  .messageEnter-leave.messageEnter-leave-active {
+    opacity: 0.01;
+    transition: all 250ms ease-in;
   }
 }

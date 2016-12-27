@@ -1,12 +1,8 @@
 import React from 'react';
 
+import styles from '../../style/index.scss';
 
-const URLCheckPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+const URLCheckPattern = new RegExp('http://|https://|www\.|ftp:');
 
 const imgCheckPattern = new RegExp('.*(jpeg|jpg|png|gif|bmp)$');
 
@@ -38,7 +34,9 @@ class ChatMessage extends React.Component {
   }
   render() {
     return (
-      <p>{this.parseMessage(this.props.msg)}</p>
+      <div className={styles.chatMessage}>
+        {this.parseMessage(this.props.msg)}
+      </div>
     )
   }
 }

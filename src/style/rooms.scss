@@ -1,0 +1,23 @@
+.rooms, .rooms ul{
+    height: 100%;
+    width: 100%;
+}
+
+.rooms{             
+    ul{
+        list-style: none;
+        margin: auto auto;    
+    }   
+
+    li{        
+        a{
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+            &:hover{
+                background-color: cornflowerblue;
+            }
+        }            
+    }
+}

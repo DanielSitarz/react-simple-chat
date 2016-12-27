@@ -1,20 +1,20 @@
 import React from 'react';
-import styles from '../style/index.scss';
+import styles from '../../style/index.scss';
 
-import ChatMessageGroup from './chatMessageGroup.jsx';
+import ChatMessageGroup from './ChatMessageGroup.jsx';
 
 class ChatMessages extends React.Component {    
-  componentDidUpdate(){    
+  componentDidUpdate(){        
     this.scrollChatToBottom();
   }
   scrollChatToBottom(){
     const chatMessagesBox = this.refs.chatMessagesBox;
     chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
   }  
-  render(){
+  groupMessagesBySender(){
     let msgs = this.props.messages;    
   
-    let messagesGroups = [];
+    let groupedMessages = [];
     let messagesToGroup = [];    
     
     let i = 0;
@@ -22,19 +22,21 @@ class ChatMessages extends React.Component {
       messagesToGroup.push(msgs[i]);
       
       if(msgs[i+1] == undefined || msgs[i].sender != msgs[i+1].sender) {
-        messagesGroups.push(
+        groupedMessages.push(
           <ChatMessageGroup messages={messagesToGroup} key={messagesToGroup[0].key} />
         );
         messagesToGroup = [];
       }
-
       i++;
     }
-    
+
+    return groupedMessages;
+  }
+  render(){
     return(
       <div className={styles.chatMessages} ref="chatMessagesBox">
           <ul>
-            {messagesGroups}
+            {this.groupMessagesBySender()}
           </ul>
       </div>
     );

@@ -2,6 +2,12 @@
 
 $mainColor: #FFB74D;
 
+$mobileBreak: 800px;
+
+body{  
+  font-family: 'Roboto', sans-serif;        
+}
+
 body, html, body > div{
   height: 100%; 
   width: 100%;
@@ -11,11 +17,6 @@ body, html, body > div{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-.root{
-  height: 100%;  
-  font-family: 'Roboto', sans-serif;        
 }
 
  button{     
@@ -31,6 +32,10 @@ body, html, body > div{
   }
   &:active{
     background: #1cb05d;        
+  }
+
+  @media screen and (max-width: $mobileBreak){
+    font-size: 1.25rem;    
   }
 } 
 
@@ -63,18 +68,21 @@ h1{
   header{    
     flex: 1;
     
-    display: flex;
-    flex-direction: column;
+    display: flex;  
     justify-content: center;
     
-    background-color: $mainColor;    
-    padding-left: 1rem;
+    background-color: $mainColor;        
     
     z-index: 1;    
     h2{
+      flex: 5;
       font-size: 1.25rem;
       color: white;
       font-weight: bold;
+      padding-left: 1rem;
+    }
+    button{
+      flex: 1;
     }
   }
   .chatMessageGroup{
@@ -88,24 +96,28 @@ h1{
       padding: 0 0.5rem;      
       border-radius: 0.25rem;      
     }
-    .chatMessageGroupMessages{      
-      background-color: #e9ebee;
-      border-radius: 0.5rem;        
-      padding: 1.25rem 1rem 1rem 1rem;
-      line-height: 1.5;  
-      &.mine{
-        background-color: rgb(84, 199, 236);
-        p{
-          color: white;
+    .chatMessageGroupMessages{
+        &.mine{
+          .chatMessage{
+            background-color: rgb(84, 199, 236);
+            color: white;
+          }          
         }
-      }
-    }  
+    }
+    .chatMessage{
+       background-color: #e9ebee;
+        border-radius: 0.5rem;        
+        padding: 1.25rem 1rem 1rem 1rem;
+        line-height: 1.5;        
+     }
+    
+    
     img{
       max-width: 100%;
       height: auto;
     }      
 
-    @media screen and (max-width: 800px){
+    @media screen and (max-width: $mobileBreak){
       img, iframe{
         width: 100%;
         
@@ -113,7 +125,7 @@ h1{
     }
   }  
   .chatMessages{
-    flex: 8;
+    flex: 12;
     overflow-y: scroll;
     font-size: 1.25rem;
     ul{      
@@ -137,6 +149,13 @@ h1{
     }
     button{   
       flex: 1;           
+    }
+
+    @media screen and (max-width: $mobileBreak){
+      input{
+        font-size: 1rem;
+        
+      }
     } 
   }     
 }
@@ -158,16 +177,13 @@ h1{
   top: 0;
   right: 0;
   left: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, .80); 
+  bottom: 0;  
 
   transition: all 0.25s ease;   
 
   .box{
     width: 50%;
-    margin: 0 auto;
-    background-color: rgba($mainColor, 0.95);
-    padding: 3rem;
+    margin: 0 auto;        
 
     display: flex;        
     flex-direction: column;    
@@ -188,8 +204,7 @@ h1{
       border: 0.2rem solid white;      
     }  
 
-    @media screen and (max-width: 800px){
-      padding: 1rem;
+    @media screen and (max-width: 800px){      
       width: 90%;           
     }    
   }   
