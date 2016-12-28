@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-$mainColor: #FFB74D;
-
-$mobileBreak: 800px;
+@import 'variables.scss';
 
 body{  
   font-family: 'Roboto', sans-serif;        
@@ -39,126 +37,7 @@ body, html, body > div{
   }
 } 
 
-.chat{  
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  right: 0;
-  left: 0;  
 
-  &.blurred{
-    filter: blur(0.15rem);
-  }
-
-  transition: all 0.5s ease;
-}
-
-h1{
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.chatBox{
-  display: flex;
-  flex-direction: column;  
-  width: 100%;
-  height: 100%;  
-  header{    
-    flex: 1;
-    
-    display: flex;  
-    justify-content: center;
-    
-    background-color: $mainColor;        
-    
-    z-index: 1;    
-    h2{
-      flex: 5;
-      font-size: 1.25rem;
-      color: white;
-      font-weight: bold;
-      padding-left: 1rem;
-    }
-    button{
-      flex: 1;
-    }
-  }
-  .chatMessageGroup{
-    position: relative;
-    margin-bottom: 1.5rem;
-    .chatMessageGroupSender{
-      position: absolute;
-      top: -0.8rem;
-      left: 0.75rem;
-      background-color: white;
-      padding: 0 0.5rem;      
-      border-radius: 0.25rem;      
-    }
-    .chatMessageGroupMessages{
-        &.mine{
-          .chatMessage{
-            background-color: rgb(84, 199, 236);
-            color: white;
-          }          
-        }
-    }
-    .chatMessage{
-       background-color: #e9ebee;
-        border-radius: 0.5rem;        
-        padding: 1.25rem 1rem 1rem 1rem;
-        line-height: 1.5;        
-     }
-    
-    
-    img{
-      max-width: 100%;
-      height: auto;
-    }      
-
-    @media screen and (max-width: $mobileBreak){
-      img, iframe{
-        width: 100%;
-        
-      }
-    }
-  }  
-  .chatMessages{
-    flex: 12;
-    overflow-y: scroll;
-    font-size: 1.25rem;
-    ul{      
-      list-style: none;
-      padding: 0.8rem 1rem 1rem 1rem;
-      margin: 0;         
-    }
-  }  
-  .chatControl{
-    flex: 1;
-    display: flex;        
-    position: relative;        
-    border-top: 2px solid $mainColor;        
-    input{      
-      flex: 3;      
-      width: 100%;
-      border: none;      
-      font-size: 2rem;
-      text-indent: 1rem;
-      padding-right: 0.5rem;
-    }
-    button{   
-      flex: 1;           
-    }
-
-    @media screen and (max-width: $mobileBreak){
-      input{
-        font-size: 1rem;
-        
-      }
-    } 
-  }     
-}
 
 .messagesData{
     position: absolute;

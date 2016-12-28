@@ -1,8 +1,5 @@
 import React from 'react';
 
-/*Styles*/
-import styles from '../../style/index.scss';
-
 /*My Components*/
 import Chat from './Chat.jsx';
 

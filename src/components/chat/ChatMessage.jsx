@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../style/index.scss';
+import chatStyle from '../../style/Chat.scss';
 
 const URLCheckPattern = new RegExp('http://|https://|www\.|ftp:');
 
@@ -34,7 +34,7 @@ class ChatMessage extends React.Component {
   }
   render() {
     return (
-      <div className={styles.chatMessage}>
+      <div className={chatStyle.message}>
         {this.parseMessage(this.props.msg)}
       </div>
     )

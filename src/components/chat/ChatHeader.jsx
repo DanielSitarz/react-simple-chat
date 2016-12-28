@@ -1,11 +1,12 @@
 import React from 'react';
-import styles from '../../style/index.scss';
+import {Link} from 'react-router';
+import styles from '../../style/Chat.scss';
 
 class ChatHeader extends React.Component {  
   render() {
     return (
       <header>
-        <button>P</button>
+        <Link to="/">Change name</Link>
         <h2>Room: {this.props.roomName}</h2>
       </header>
     )

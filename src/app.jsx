@@ -16,6 +16,7 @@ class App extends Component {
     return (
       <Router history={browserHistory}>
         <Route path="/" component={NameInputContainer}/>
+        <Route path="/chat" component={NameInputContainer}/>
         <Route path="/rooms" component={RoomsContainer}/>
         <Route path="/chat/:room" component={ChatContainer}/>
       </Router>        
