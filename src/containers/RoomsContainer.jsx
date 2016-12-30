@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router';
 
 /*Styles*/
-import styles from '../../style/rooms.scss';
-import flexGrid from '../../style/flex-grid.scss';
+import styles from '../style/rooms.scss';
+import flexGrid from '../style/flex-grid.scss';
 
 const rooms = [
     {        

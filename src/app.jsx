@@ -6,9 +6,9 @@ import { Router, Route, Link, browserHistory } from 'react-router'
 import styles from './style/index.scss';
 
 /*My Components*/
-import ChatContainer from './components/Chat/ChatContainer';
-import NameInputContainer from './components/nameInput/NameInputContainer';
-import RoomsContainer from './components/rooms/RoomsContainer';
+import ChatContainer from './containers/ChatContainer';
+import NameInputContainer from './containers/NameInputContainer';
+import RoomsContainer from './containers/RoomsContainer';
 
 
 class App extends Component {  

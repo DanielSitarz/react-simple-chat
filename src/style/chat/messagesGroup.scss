@@ -1,0 +1,48 @@
+@import '../variables.scss';
+
+$defaultMessageBackground: #ECECEC;
+
+.group{
+    position: relative;    
+    margin-bottom: 1.5rem;            
+
+    background-color: $defaultMessageBackground;
+
+    .sender{
+        position: absolute;
+        top: -0.8rem;
+        left: 0.75rem;
+        background-color: white;
+        padding: 0 0.5rem;      
+        border-radius: 0.25rem;      
+    }    
+
+    ul{      
+        list-style: none;
+        padding: 0.8rem 1rem 1rem 1rem;
+        margin: 0;         
+    }           
+
+    .message{
+        background-color: #e9ebee;
+        border-radius: 0.5rem;        
+        padding: 1.25rem 1rem 1rem 1rem;
+        line-height: 1.5;        
+
+        &.mine{
+            background-color: rgb(84, 199, 236);
+            color: white;          
+        }
+
+        img{
+            max-width: 100%;
+            height: auto;
+        }      
+
+        @media screen and (max-width: $mobileBreak){
+            img, iframe{
+            width: 100%;                    
+            }
+        }
+    }
+}

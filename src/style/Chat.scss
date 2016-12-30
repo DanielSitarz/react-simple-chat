@@ -8,82 +8,14 @@
     bottom: 0;
     top: 0;
     right: 0;
-    left: 0;      
-
-    header{    
-        flex: 1;
-
-        display: flex;  
-        justify-content: center;
-
-        background-color: black;
-
-        z-index: 1;
-        h1{
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        h2{
-            flex: 5;
-            font-size: 1.25rem;
-            color: white;
-            font-weight: bold;
-            padding-left: 1rem;
-        }
-        button{
-            flex: 1;
-        }
-    }
+    left: 0;         
 
     .messages{        
         flex: 12;
         overflow-y: scroll;
         font-size: 1.25rem;       
         padding: 1rem;                 
-
-        .group{
-            position: relative;
-            margin-bottom: 1.5rem;            
-
-            .groupSender{
-                position: absolute;
-                top: -0.8rem;
-                left: 0.75rem;
-                background-color: white;
-                padding: 0 0.5rem;      
-                border-radius: 0.25rem;      
-            }    
-
-             ul{      
-                list-style: none;
-                padding: 0.8rem 1rem 1rem 1rem;
-                margin: 0;         
-            }           
-
-            .groupMessage{
-                background-color: #e9ebee;
-                border-radius: 0.5rem;        
-                padding: 1.25rem 1rem 1rem 1rem;
-                line-height: 1.5;        
-
-                &.mine{
-                    background-color: rgb(84, 199, 236);
-                    color: white;          
-                }
-
-                img{
-                    max-width: 100%;
-                    height: auto;
-                }      
-
-                @media screen and (max-width: $mobileBreak){
-                    img, iframe{
-                    width: 100%;                    
-                    }
-                }
-            }
-        }
+        list-style: none;        
     }  
 
     form{

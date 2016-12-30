@@ -34,9 +34,9 @@ class ChatMessage extends React.Component {
   }
   render() {
     return (
-      <div className={chatStyle.message}>
+      <li className={chatStyle.message}>
         {this.parseMessage(this.props.msg)}
-      </div>
+      </li>
     )
   }
 }

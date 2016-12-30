@@ -1,12 +1,9 @@
 import React from 'react';
 import chatStyle from '../../style/Chat.scss';
 
-import ChatMessageGroup from './ChatMessageGroup.jsx';
+import ChatMessagesGroup from './ChatMessagesGroup.jsx';
 
-class ChatMessages extends React.Component {
-  constructor(props){
-    super();    
-  }
+class ChatMessages extends React.Component {  
   componentDidUpdate(){            
     this.scrollToBottom();    
   }
@@ -19,7 +16,7 @@ class ChatMessages extends React.Component {
       <ul className={chatStyle.messages} ref="chatMessagesBox">
         {          
           groupMessages(this.props.messages).map((group) => {
-            return(<ChatMessageGroup messages={group.msgs} key={group.msgs[0].key} />)
+            return(<ChatMessagesGroup messages={group.msgs} key={group.msgs[0].key} />)
           })
         }
       </ul>
@@ -27,9 +24,8 @@ class ChatMessages extends React.Component {
   }
 }
 
-let groupMessages = (msgs) => {
-      let groupedMessages = [];                  
-            
+const groupMessages = (msgs = []) => {
+      let groupedMessages = [];                              
       let messagesToGroup = [];    
       
       let i = 0;

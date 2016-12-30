@@ -1,11 +1,10 @@
 import React from 'react';
 
 /*My Components*/
-import Chat from './Chat.jsx';
+import Chat from '../components/chat/Chat.jsx';
 
 /*Third Party*/
 import io from 'socket.io-client';
-import expect from 'expect';
 
 
 var messagesData = [
@@ -31,23 +30,12 @@ class ChatContainer extends React.Component {
 
     this.handleSendMessage = this.handleSendMessage.bind(this);
 
-    this.socketSetup();
-
-
-    expect(
-      this.createMessage(0, "Dan", "Hey")
-    ).toEqual(
-      {
-        key: 0,
-        sender: "Dan",
-        msg: "Hey"
-      }
-    )
+    this.socketSetup();    
   }   
   socketSetup(){
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');    
 
-    this.socket.on('chat message', this.onChatMessage.bind(this));         
+    this.socket.on('chat message', this.onChatMessage.bind(this));
   } 
   createMessage(key, sender, msg){
     return {

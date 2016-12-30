@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../style/index.scss';
+import styles from '../style/index.scss';
 
 import {browserHistory} from 'react-router';
 

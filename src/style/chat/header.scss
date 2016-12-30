@@ -1,0 +1,33 @@
+@import '../variables.scss';
+
+.header{
+    flex: 1;
+
+    display: flex;  
+    justify-content: center;
+
+    background-color: $mainColor;
+
+    z-index: 1;
+    h1{
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    h2{
+        flex: 5;
+        font-size: 1.25rem;
+        color: white;
+        font-weight: bold;
+        padding-left: 1rem;
+    }
+
+    a{        
+        flex: 1;
+        background: #AAA;        
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        font-size: 1rem;
+    }
+}
