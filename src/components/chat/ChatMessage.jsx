@@ -2,43 +2,38 @@ import React from 'react';
 
 import chatStyle from '../../style/Chat.scss';
 
+const ChatMessage = ({msg}) => (
+  <li className={chatStyle.message}>
+    {parseMessage(msg)}
+  </li>
+)
+
+
 const URLCheckPattern = new RegExp('http://|https://|www\.|ftp:');
-
 const imgCheckPattern = new RegExp('.*(jpeg|jpg|png|gif|bmp)$');
-
 const youtubeCheckPattern = new RegExp('youtube|youtu\.be');
+const parseMessage = (msg) => {
+  if(URLCheckPattern.test(msg)){
 
-class ChatMessage extends React.Component {  
-  parseMessage(msg){
-    if(URLCheckPattern.test(msg)){
-
-      if(imgCheckPattern.test(msg)){
-        return (
-          <img src={msg}/>
-        )  
-      }
-
-      if(youtubeCheckPattern.test(msg)){
-        msg = msg.replace("watch?v=", "embed/"); 
-        return (
-          <iframe width="560" height="315" src={msg} frameBorder="0" allowFullScreen></iframe>
-        )  
-      }
-
+    if(imgCheckPattern.test(msg)){
       return (
-        <a href={msg} target="_blank">{msg}</a>
-      )
+        <img src={msg}/>
+      )  
     }
 
-    return msg;
-  }
-  render() {
+    if(youtubeCheckPattern.test(msg)){
+      msg = msg.replace("watch?v=", "embed/"); 
+      return (
+        <iframe width="560" height="315" src={msg} frameBorder="0" allowFullScreen></iframe>
+      )  
+    }
+
     return (
-      <li className={chatStyle.message}>
-        {this.parseMessage(this.props.msg)}
-      </li>
+      <a href={msg} target="_blank">{msg}</a>
     )
   }
+
+  return msg;
 }
 
 export default ChatMessage;

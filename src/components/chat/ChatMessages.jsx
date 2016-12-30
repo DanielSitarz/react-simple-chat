@@ -25,26 +25,26 @@ class ChatMessages extends React.Component {
 }
 
 const groupMessages = (msgs = []) => {
-      let groupedMessages = [];                              
-      let messagesToGroup = [];    
-      
-      let i = 0;
-      while(i < msgs.length){
-        messagesToGroup.push(msgs[i]);
-        
-        if(msgs[i+1] == undefined || msgs[i].sender != msgs[i+1].sender) {
-          groupedMessages.push(
-            {
-              msgs: messagesToGroup,
-              key: messagesToGroup[0].key
-            }
-          );
-          messagesToGroup = [];
+  let groupedMessages = [];                              
+  let messagesToGroup = [];    
+  
+  let i = 0;
+  while(i < msgs.length){
+    messagesToGroup.push(msgs[i]);
+    
+    if(msgs[i+1] == undefined || msgs[i].sender != msgs[i+1].sender) {
+      groupedMessages.push(
+        {
+          msgs: messagesToGroup,
+          key: messagesToGroup[0].key
         }
-        i++;
-      }    
-
-      return groupedMessages;
+      );
+      messagesToGroup = [];
     }
+    i++;
+  }    
+
+  return groupedMessages;
+}
 
 export default ChatMessages;
