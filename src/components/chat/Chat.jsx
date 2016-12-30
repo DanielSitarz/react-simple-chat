@@ -1,20 +1,23 @@
-import React from 'react';
-import chatStyle from '../../style/Chat.scss';
+import React, { PropTypes } from 'react';
 
 import ChatHeader from './ChatHeader.jsx';
 import ChatMessages from './ChatMessages.jsx';
 import ChatControl from './ChatControl.jsx';
 
-class Chat extends React.Component {
-  render() {
-    return (
-      <div className={chatStyle.Chat}>
-        <ChatHeader roomName={this.props.roomName}></ChatHeader>        
-        <ChatMessages messages={this.props.messages} />
-        <ChatControl handleSendMessage={this.props.handleSendMessage} />
-      </div>
-    )
-  }
+import chatStyle from '../../style/Chat.scss';
+
+const Chat = ({roomName, messages, handleSendMessage}) => (
+  <div className={chatStyle.Chat}>
+    <ChatHeader roomName={roomName}></ChatHeader>        
+    <ChatMessages messages={messages} />
+    <ChatControl handleSendMessage={handleSendMessage} />
+  </div>
+)
+
+Chat.PropTypes = {
+  roomName: PropTypes.string.isRequired,
+  messages: PropTypes.array.isRequired,
+  handleSendMessage: PropTypes.func.isRequired
 }
 
 export default Chat;

@@ -18,6 +18,14 @@
         list-style: none;        
     }  
 
+    .message{                  
+        img, iframe{
+            @media screen and (max-width: $mobileBreak){
+                width: 100%;
+            }            
+        }
+    }
+
     form{
         flex: 1;
         display: flex;        
