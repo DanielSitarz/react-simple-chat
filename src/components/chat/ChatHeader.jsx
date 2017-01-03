@@ -2,15 +2,18 @@ import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
 import style from '../../style/chat/header.scss';
 
-const ChatHeader = ({roomName}) => (
-  <header className={style.header}>        
-    <Link to="/">Change name</Link>
+const ChatHeader = ({userName, roomName, handleNameChangeModalOpen}) => (
+  <header className={style.header}>      
+    <span>{userName}</span>  
+    <button onClick={handleNameChangeModalOpen}>Change name</button>
     <h2>Room: {roomName}</h2>
   </header>
 )
 
 ChatHeader.PropTypes = {
-  roomName: PropTypes.string.isRequired
+  userName: PropTypes.string.isRequired,
+  roomName: PropTypes.string.isRequired,
+  handleNameChangeModalOpen: PropTypes.func.isRequired
 }
 
 export default ChatHeader;

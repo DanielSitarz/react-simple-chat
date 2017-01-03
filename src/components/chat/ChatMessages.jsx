@@ -1,7 +1,8 @@
 import React from 'react';
 import chatStyle from '../../style/Chat.scss';
 
-import ChatMessagesGroup from './ChatMessagesGroup.jsx';
+import ChatMessagesGroup from './ChatMessagesGroup';
+import ChatMessagesGroupFromServer from './ChatMessagesGroupFromServer';
 
 class ChatMessages extends React.Component {  
   componentDidUpdate(){            
@@ -16,7 +17,10 @@ class ChatMessages extends React.Component {
       <ul className={chatStyle.messages} ref="chatMessagesBox">
         {          
           groupMessages(this.props.messages).map((group) => {
-            return(<ChatMessagesGroup messages={group.msgs} key={group.msgs[0].key} />)
+            if(group.msgs[0].power == 0 && group.msgs[0].isServerMsg)
+              return(<ChatMessagesGroupFromServer {...group} />)
+            else 
+              return(<ChatMessagesGroup {...group} />)
           })
         }
       </ul>
@@ -30,8 +34,7 @@ const groupMessages = (msgs = []) => {
   
   let i = 0;
   while(i < msgs.length){
-    messagesToGroup.push(msgs[i]);
-    
+    messagesToGroup.push(msgs[i]);    
     if(msgs[i+1] == undefined || msgs[i].sender != msgs[i+1].sender) {
       groupedMessages.push(
         {

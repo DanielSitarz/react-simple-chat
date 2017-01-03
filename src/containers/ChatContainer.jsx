@@ -1,59 +1,58 @@
 import React from 'react';
 
+import { connect } from 'react-redux';
+import store from '../store/store';
+
+import chatStyle from '../style/Chat.scss';
+
 /*My Components*/
-import Chat from '../components/chat/Chat.jsx';
+import ChatHeader from '../components/chat/ChatHeader.jsx';
+import ChatMessages from '../components/chat/ChatMessages.jsx';
+import ChatControl from '../components/chat/ChatControl.jsx';
+
+import ChatNameSelectModal from '../components/chat/ChatNameSelectModal';
 
 /*Third Party*/
 import io from 'socket.io-client';
 
-
-var messagesData = [
-  {
-    key: 0,
-    sender: "D",
-    msg: "Hello Cutie"
-  },
-  {
-    key: 1,
-    sender: "D",
-    msg: "https://www.youtube.com/watch?v=rT_I_GV_oEM"
-  }
-];
-
 class ChatContainer extends React.Component {
   constructor(props){
-    super(props);        
+    super(props);            
 
     this.state = {
-        messages: messagesData
+      nameSelectModalOpen: false
     };
 
     this.handleSendMessage = this.handleSendMessage.bind(this);
+    this.handleNameChangeModalOpen = this.handleNameChangeModalOpen.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
 
-    this.socketSetup();    
+    this.socketSetup();            
   }   
   socketSetup(){
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');    
 
-    this.socket.on('chat message', this.onChatMessage.bind(this));
+    this.socket.emit("enter room", {
+      userName: this.props.userName,
+      roomName: this.props.params.roomName
+    });
+
+    this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
   } 
-  createMessage(key, sender, msg){
+  createMessage(key = (new Date()).getTime(), sender, msg){    
     return {
       key: key,
       sender: sender,
-      msg: msg
+      content: msg,
+      power: 1.0,
+      roomName: this.props.params.roomName
     };
-  }
-  pushNewMessage(newMsg){
-    let newState = Object.assign({}, this.state);      
-    newState.messages.push(newMsg);
-
-    this.setState(newState);
-  }
-  onChatMessage(data){
-    const newMessage = this.createMessage(data.key, data.sender, data.msg);    
-
-    this.pushNewMessage(newMessage);
+  }  
+  onReceiveChatMessage(data){            
+    store.dispatch({
+      type: "ADD_MSG",
+      msg: data
+    });            
   }
   handleSendMessage(e) {
     e.preventDefault();
@@ -64,22 +63,57 @@ class ChatContainer extends React.Component {
       return;      
     }             
 
-    const newMessage = this.createMessage((new Date()).getTime(), this.props.userName, msg);    
+    const newMessage = this.createMessage(undefined, this.props.userName, msg);        
 
-    this.pushNewMessage(newMessage);
+    store.dispatch({
+      type: "ADD_MSG",
+      msg: newMessage
+    });                
 
     this.socket.emit('chat message', newMessage);
 
     e.target.reset();
   }
+  handleNameChangeModalOpen(){
+    let newState = {
+      nameSelectModalOpen: true
+    };
+    this.setState(newState);
+  }
+  handleNameChange(newName){    
+    store.dispatch({
+      type: "USER_SET_NAME",
+      name: newName
+    });    
+    let newState = {
+      nameSelectModalOpen: false
+    };
+    this.setState(newState);
+
+    this.socket.emit('name change', newName);
+  }   
   render() {
-    return (
-        <Chat
-            roomName={this.props.params.room}
-            handleSendMessage={this.handleSendMessage}
-            messages={this.state.messages} />
+    return (      
+        <div className={chatStyle.Chat}>
+          <ChatNameSelectModal 
+            show={this.state.nameSelectModalOpen} 
+            handleNameChange={this.handleNameChange}/>        
+          <ChatHeader 
+            userName={this.props.userName}
+            roomName={this.props.params.roomName} 
+            handleNameChangeModalOpen={this.handleNameChangeModalOpen}/>
+          <ChatMessages messages={this.props.messages} />
+          <ChatControl handleSendMessage={this.handleSendMessage} />
+        </div>      
     )
   }
 }
 
-export default ChatContainer;
+const mapStateToProps = function(store) {  
+  return {
+    userName: store.chatState.userName,
+    messages: store.messages
+  }
+}
+
+export default connect(mapStateToProps)(ChatContainer);

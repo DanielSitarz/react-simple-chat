@@ -1,19 +1,25 @@
 import React, {PropTypes} from 'react';
+import store from '../../store/store'
 
 import messegesGroupStyle from '../../style/chat/messagesGroup.scss';
 
 import ChatMessage from './ChatMessage.jsx';
 
-const ChatMessageGroup = ({messages}) => (
-  <li className={messegesGroupStyle.group}>
+const getGroupStyle = (sender) => {
+  let isYourGroup = store.getState().chatState.userName == sender;
+  return messegesGroupStyle.group + " " + (isYourGroup ? messegesGroupStyle.your : "");
+}
+
+const ChatMessageGroup = ({msgs}) => (
+  <li className={getGroupStyle(msgs[0].sender)}>
     <div className={messegesGroupStyle.sender}>
-      <strong>{messages[0].sender || "Anonymous"}</strong>
+      <strong>{msgs[0].sender}</strong>
     </div>
     <ul>
       {
-        messages.map((a) => {                                    
-            return (        
-              <ChatMessage key={a.key} sender={a.sender} msg={a.msg} />
+        msgs.map((msg) => {
+            return (
+              <ChatMessage {...msg} />
             )
         })
       }

@@ -2,12 +2,11 @@ import React from 'react';
 
 import chatStyle from '../../style/Chat.scss';
 
-const ChatMessage = ({msg}) => (
+const ChatMessage = ({content}) => (
   <li className={chatStyle.message}>
-    {parseMessage(msg)}
+    {parseMessage(content)}
   </li>
 )
-
 
 const URLCheckPattern = new RegExp('http://|https://|www\.|ftp:');
 const imgCheckPattern = new RegExp('.*(jpeg|jpg|png|gif|bmp)$');
