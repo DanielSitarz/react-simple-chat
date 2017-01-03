@@ -4,9 +4,9 @@ import style from '../../style/chat/header.scss';
 
 const ChatHeader = ({userName, roomName, handleNameChangeModalOpen}) => (
   <header className={style.header}>      
-    <span>{userName}</span>  
+    <div className={style.userName}>{userName}</div>  
     <button onClick={handleNameChangeModalOpen}>Change name</button>
-    <h2>Room: {roomName}</h2>
+    <div className={style.roomName}>Room: {roomName}</div>
   </header>
 )
 

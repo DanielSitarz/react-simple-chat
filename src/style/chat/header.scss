@@ -9,13 +9,19 @@
     background-color: $mainColor;
 
     z-index: 1;
-    h1{
-        font-size: 3rem;
-        margin-bottom: 1rem;
+    .userName{       
+        flex: 2;
+        display: flex; 
+        justify-content: center;
+        align-items: center;        
+        font-size: 1.25rem;
+        margin: 0;                   
     }
 
-    h2{
+    .roomName{
         flex: 5;
+        display: flex;         
+        align-items: center;        
         font-size: 1.25rem;
         color: white;
         font-weight: bold;

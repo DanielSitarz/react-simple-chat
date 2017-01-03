@@ -38,16 +38,22 @@ class ChatContainer extends React.Component {
     });
 
     this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
-  } 
-  createMessage(key = (new Date()).getTime(), sender, msg){    
+  }   
+  createMessage(key = (new Date()).getTime(), sender, content){    
     return {
       key: key,
       sender: sender,
-      content: msg,
+      content: content,
       power: 1.0,
       roomName: this.props.params.roomName
     };
-  }  
+  } 
+  createMessageFromServer(content){    
+    let msg = this.createMessage(undefined, "Chat", content)
+    msg.power = 0;
+    msg.isFromServer = true;
+    return msg;
+  }   
   onReceiveChatMessage(data){            
     store.dispatch({
       type: "ADD_MSG",
@@ -80,15 +86,22 @@ class ChatContainer extends React.Component {
     };
     this.setState(newState);
   }
-  handleNameChange(newName){    
+  handleNameChange(newName){        
+    let newState = {
+      nameSelectModalOpen: false
+    };
+    this.setState(newState);    
+
+    let oldName = this.props.userName;
+
     store.dispatch({
       type: "USER_SET_NAME",
       name: newName
     });    
-    let newState = {
-      nameSelectModalOpen: false
-    };
-    this.setState(newState);
+    store.dispatch({
+      type: "ADD_MSG",
+      msg: this.createMessageFromServer( oldName + " changes name to " + newName + ".")
+    });    
 
     this.socket.emit('name change', newName);
   }   

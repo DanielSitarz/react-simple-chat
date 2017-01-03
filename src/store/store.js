@@ -1,7 +1,8 @@
 import { createStore, combineReducers } from 'redux';
+import randomNameGenerator from '../randomNameGenerator'
 
 const chatUserInitialState = {
-    userName: "Dan",
+    userName: randomNameGenerator(),
     usersInRoom: [],
     currentRoomId: "DogsLovers",   
 }
