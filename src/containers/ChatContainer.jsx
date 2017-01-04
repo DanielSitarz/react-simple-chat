@@ -74,13 +74,14 @@ class ChatContainer extends React.Component {
     msg.isFromServer = true;
     return msg;
   }   
-  onReceiveChatMessage(data){            
-    store.dispatch({
-      type: "ADD_MSG",
-      msg: data
-    });            
-
+  onReceiveChatMessage(data){                        
     if(!data.isFromServer){            
+
+      store.dispatch({
+        type: "ADD_MSG",
+        msg: data
+      });  
+
       let i = 0;
       document.title = "New Message";
       this.newMessageTitleChanger = setInterval(() => {
@@ -91,7 +92,12 @@ class ChatContainer extends React.Component {
         }
         i++;
       }, 1000);
-    }    
+    }else{
+      store.dispatch({
+        type: "ADD_MSG",
+        msg: this.createMessageFromServer(data.content)
+      });  
+    }
   }  
   handleSendMessage(e) {
     e.preventDefault();
