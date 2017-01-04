@@ -20,25 +20,45 @@ class ChatContainer extends React.Component {
     super(props);            
 
     this.state = {
-      nameSelectModalOpen: false
+      nameSelectModalOpen: false,      
     };
 
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.handleNameChangeModalOpen = this.handleNameChangeModalOpen.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
 
-    this.socketSetup();            
+    this.socketSetup();
+    
+    this.enterRoom();
+
+    this.title = document.title;
+
+    window.onfocus = () => {
+      clearInterval(this.newMessageTitleChanger);
+      document.title = this.title;
+    }
   }   
   socketSetup(){
-    this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');    
+    this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');        
 
+    this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
+  }   
+
+  enterRoom(){
     this.socket.emit("enter room", {
       userName: this.props.userName,
       roomName: this.props.params.roomName
     });
+    store.dispatch({
+      type: "SET_MSGS",
+      msgs: JSON.parse(localStorage.getItem(this.props.params.roomName + "_messages"))
+    });  
+     store.dispatch({
+      type: "ADD_MSG",
+      msg: this.createMessageFromServer(this.props.userName + " connected.")
+    });  
+  }
 
-    this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
-  }   
   createMessage(key = (new Date()).getTime(), sender, content){    
     return {
       key: key,
@@ -59,7 +79,20 @@ class ChatContainer extends React.Component {
       type: "ADD_MSG",
       msg: data
     });            
-  }
+
+    if(!data.isFromServer){            
+      let i = 0;
+      document.title = "New Message";
+      this.newMessageTitleChanger = setInterval(() => {
+        if(i % 2 == 1){
+          document.title = "New Message";
+        }else{
+          document.title = this.title;
+        }
+        i++;
+      }, 1000);
+    }    
+  }  
   handleSendMessage(e) {
     e.preventDefault();
     
@@ -124,8 +157,8 @@ class ChatContainer extends React.Component {
 
 const mapStateToProps = function(store) {  
   return {
-    userName: store.chatState.userName,
-    messages: store.messages
+    userName: store.chatState.userName,    
+    messages: store.messages,    
   }
 }
 

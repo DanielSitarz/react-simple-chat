@@ -1,25 +1,23 @@
 import { createStore, combineReducers } from 'redux';
-import randomNameGenerator from '../randomNameGenerator'
+import randomNameGenerator from '../helpers/randomNameGenerator'
 
 const chatUserInitialState = {
     userName: randomNameGenerator(),
     usersInRoom: [],
-    currentRoomId: "DogsLovers",   
+    roomName: "DogsLovers",    
 }
 
-const chatMessagesInitialState = [
-    {
-        key: 0,            
-        sender: "Dan",
-        content: "Hey!",
-        power: 1.0
-    }
-];
+const chatMessagesInitialState = {};
 
 const messagesReducer = (state = chatMessagesInitialState, action) => {            
     switch(action.type){
-        case "ADD_MSG":             
-            return [...state, action.msg];
+        case "SET_MSGS":                                   
+            return action.msgs || {};
+        break;
+        case "ADD_MSG":                       
+            let newState = [...state, action.msg];
+            localStorage.setItem(action.msg.roomName + "_messages", JSON.stringify(newState));
+            return newState;
         break;
         case "USER_SEND_MSG":
             return state;

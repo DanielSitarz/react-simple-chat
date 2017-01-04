@@ -32,15 +32,18 @@
         position: relative;        
         border-top: 2px solid $mainColor;        
         input{      
-        flex: 3;      
-        width: 100%;
-        border: none;      
-        font-size: 2rem;
-        text-indent: 1rem;
-        padding-right: 0.5rem;
+            flex: 3;      
+            width: 100%;
+            border: none;      
+            font-size: 2rem;
+            text-indent: 1rem;
+            padding-right: 0.5rem;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;            
         }
         button{   
-        flex: 1;           
+            flex: 1;           
         }
 
         @media screen and (max-width: $mobileBreak){

@@ -4,10 +4,12 @@ import { Router, Route, Link, browserHistory } from 'react-router'
 /*My Components*/
 import ChatContainer from './containers/ChatContainer';
 
+let baseURL = '/chat/'
+
 export default (
-    <Router history={browserHistory}>
-        <Route path="/" component={ChatContainer}/>
-        <Route path="/room" component={ChatContainer}/>        
-        <Route path="/room/:roomName" component={ChatContainer}/>
+    <Router history={browserHistory}>    
+        <Route path={baseURL} component={ChatContainer}/>
+        <Route path={baseURL + "room"} component={ChatContainer}/>        
+        <Route path={baseURL + "room/:roomName"} component={ChatContainer}/>
     </Router> 
 )
