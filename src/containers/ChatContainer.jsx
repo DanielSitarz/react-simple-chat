@@ -12,6 +12,8 @@ import ChatControl from '../components/chat/ChatControl.jsx';
 
 import ChatNameSelectModal from '../components/chat/ChatNameSelectModal';
 
+import NewMessageNotification from '../chat/NewMessageNotification';
+
 /*Third Party*/
 import io from 'socket.io-client';
 
@@ -21,29 +23,23 @@ class ChatContainer extends React.Component {
 
     this.state = {
       nameSelectModalOpen: false,      
-    };
+    };         
 
+    this.newMessageNotification = new NewMessageNotification();
+
+    this.bindEvents();
+    this.setupSocket();    
+    this.enterRoom();    
+  }   
+  bindEvents(){
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.handleNameChangeModalOpen = this.handleNameChangeModalOpen.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
-
-    this.socketSetup();
-    
-    this.enterRoom();
-
-    this.title = document.title;
-
-    window.onfocus = () => {
-      clearInterval(this.newMessageTitleChanger);
-      document.title = this.title;
-    }
-  }   
-  socketSetup(){
+  }
+  setupSocket(){
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');        
-
     this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
   }   
-
   enterRoom(){
     this.socket.emit("enter room", {
       userName: this.props.userName,
@@ -75,30 +71,19 @@ class ChatContainer extends React.Component {
     return msg;
   }   
   onReceiveChatMessage(data){                        
+    let msg;
     if(!data.isFromServer){            
-
-      store.dispatch({
-        type: "ADD_MSG",
-        msg: data
-      });  
-
-      let i = 0;
-      document.title = "New Message";
-      this.newMessageTitleChanger = setInterval(() => {
-        if(i % 2 == 1){
-          document.title = "New Message";
-        }else{
-          document.title = this.title;
-        }
-        i++;
-      }, 1000);
+      msg = data;
+      this.newMessageNotification.notifyAboutNewMessage();      
     }else{
-      store.dispatch({
-        type: "ADD_MSG",
-        msg: this.createMessageFromServer(data.content)
-      });  
+      msg = this.createMessageFromServer(data.content);
     }
-  }  
+
+    store.dispatch({
+      type: "ADD_MSG",
+      msg: msg
+    });  
+  }   
   handleSendMessage(e) {
     e.preventDefault();
     

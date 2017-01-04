@@ -18,24 +18,32 @@
         list-style: none;        
     }  
 
-    .message{                  
-        img, iframe{
-            @media screen and (max-width: $mobileBreak){
-                width: 100%;
-            }            
+      .message{
+        line-height: 1.5;        
+
+        img{
+            max-width: 100%;
+            height: auto;
+        }      
+
+        @media screen and (max-width: $mobileBreak){
+            img, iframe{
+                width: 100%;                    
+            }
         }
     }
 
     form{
-        flex: 1;
-        display: flex;        
+        flex: 1 0 auto;
+        display: flex; 
+        max-height: 4rem;       
         position: relative;        
         border-top: 2px solid $mainColor;        
         input{      
             flex: 3;      
             width: 100%;
             border: none;      
-            font-size: 2rem;
+            font-size: 1.25rem;
             text-indent: 1rem;
             padding-right: 0.5rem;
             overflow-y: auto;

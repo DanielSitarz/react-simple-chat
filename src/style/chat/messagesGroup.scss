@@ -24,28 +24,7 @@ $defaultMessageBackground: #ECECEC;
         margin: 0;         
     }           
 
-    .message{
-        background-color: #e9ebee;
-        border-radius: 0.5rem;        
-        padding: 1.25rem 1rem 1rem 1rem;
-        line-height: 1.5;        
-
-        &.mine{
-            background-color: rgb(84, 199, 236);
-            color: white;          
-        }
-
-        img{
-            max-width: 100%;
-            height: auto;
-        }      
-
-        @media screen and (max-width: $mobileBreak){
-            img, iframe{
-            width: 100%;                    
-            }
-        }
-    }
+  
 
     &.your{
         background-color: #90CAF9; 
