@@ -1,7 +1,7 @@
 export default class NewMessageNotification{
     constructor(){
-        this.newMessageTitleChanger = 0;
-        this.title = document.title;
+        this.newMessageTitleChanger = null;        
+        this.title = document.title;        
         this.isFocused = true;
 
         this.setupEvents();
@@ -23,12 +23,12 @@ export default class NewMessageNotification{
     }
 
     handleBlur(){
-        this.isFocused = false;        
+        this.isFocused = false;
     }
 
     notifyAboutNewMessage(){
         if(this.isFocused) return;
-        
+
         if(this.newMessageTitleChanger)
         clearInterval(this.newMessageTitleChanger);
 

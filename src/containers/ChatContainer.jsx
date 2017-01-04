@@ -25,6 +25,9 @@ class ChatContainer extends React.Component {
       nameSelectModalOpen: false,      
     };         
 
+    this.isTypingTimeout = null;
+    this.youAreTyping = false;
+
     this.newMessageNotification = new NewMessageNotification();
 
     this.bindEvents();
@@ -35,10 +38,14 @@ class ChatContainer extends React.Component {
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.handleNameChangeModalOpen = this.handleNameChangeModalOpen.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleMessageTyping = this.handleMessageTyping.bind(this);    
   }
   setupSocket(){
-    this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');        
+    this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');  
+
     this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
+    this.socket.on('is typing', this.onSomeoneIsTyping.bind(this));    
+    this.socket.on('stopped typing', this.onSomeoneStoppedTyping.bind(this));    
   }   
   enterRoom(){
     this.socket.emit("enter room", {
@@ -101,9 +108,51 @@ class ChatContainer extends React.Component {
     });                
 
     this.socket.emit('chat message', newMessage);
+    this.youAreTyping = false;
+    this.socket.emit('stopped typing', this.props.userName);
 
     e.target.reset();
   }
+  /**
+   * Notify others in rooms that you are typing
+   */
+  handleMessageTyping(e){
+    if(this.youAreTyping) {
+      window.clearTimeout(this.isTypingTimeout);
+      this.startTypingTimeout();
+      return;
+    }
+
+    this.youAreTyping = true;
+    
+    this.startTypingTimeout();
+
+    this.socket.emit('is typing', this.props.userName);                  
+  }
+  startTypingTimeout(){
+    window.clearTimeout(this.isTypingTimeout);
+    this.isTypingTimeout = window.setTimeout(() => {
+      this.youAreTyping = false;
+      this.socket.emit('stopped typing', this.props.userName);
+    }, 3000);     
+  }
+  /**
+   * Handle typing notigications from others
+   */
+  onSomeoneIsTyping(who){
+    store.dispatch({
+      type: "IS_TYPING",
+      who: who
+    });                
+  }
+  onSomeoneStoppedTyping(who){    
+    store.dispatch({
+      type: "STOPPED_TYPING",
+      who: who
+    });       
+    this.forceUpdate();
+  }
+
   handleNameChangeModalOpen(){
     let newState = {
       nameSelectModalOpen: true
@@ -134,13 +183,18 @@ class ChatContainer extends React.Component {
         <div className={chatStyle.Chat}>
           <ChatNameSelectModal 
             show={this.state.nameSelectModalOpen} 
-            handleNameChange={this.handleNameChange}/>        
+            handleNameChange={this.handleNameChange}/>                    
           <ChatHeader 
             userName={this.props.userName}
             roomName={this.props.params.roomName} 
             handleNameChangeModalOpen={this.handleNameChangeModalOpen}/>
           <ChatMessages messages={this.props.messages} />
-          <ChatControl handleSendMessage={this.handleSendMessage} />
+          {
+            this.props.areTyping.map((e, i) => {
+              return(<div className={chatStyle.isTypingBox} key={i}>{e} is typing...</div>)
+            })
+          }
+          <ChatControl handleSendMessage={this.handleSendMessage} handleMessageTyping={this.handleMessageTyping} />
         </div>      
     )
   }
@@ -150,6 +204,7 @@ const mapStateToProps = function(store) {
   return {
     userName: store.chatState.userName,    
     messages: store.messages,    
+    areTyping: store.areTyping
   }
 }
 

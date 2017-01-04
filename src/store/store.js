@@ -1,4 +1,5 @@
 import { createStore, combineReducers } from 'redux';
+import _ from 'lodash/array';
 import randomNameGenerator from '../helpers/randomNameGenerator'
 
 const chatUserInitialState = {
@@ -7,7 +8,9 @@ const chatUserInitialState = {
     roomName: "DogsLovers",    
 }
 
-const chatMessagesInitialState = {};
+const chatMessagesInitialState = [];
+
+const areTypingInitialState = [];
 
 const messagesReducer = (state = chatMessagesInitialState, action) => {            
     switch(action.type){
@@ -18,15 +21,21 @@ const messagesReducer = (state = chatMessagesInitialState, action) => {
             let newState = [...state, action.msg];
             localStorage.setItem(action.msg.roomName + "_messages", JSON.stringify(newState));
             return newState;
-        break;
-        case "USER_SEND_MSG":
-            return state;
-        break;
-        case "USER_RECEIVED_MSG":
-            return state;
-        break;
+        break;        
     }
 
+    return state;
+}
+
+const areTypingReducer = (state = areTypingInitialState, action) => {
+    switch(action.type){
+        case "IS_TYPING":            
+            return [...state, action.who];
+        break;
+        case "STOPPED_TYPING":
+            return _.pull(state, action.who);
+        break;
+    }
     return state;
 }
 
@@ -44,7 +53,8 @@ const userReducer = (state = chatUserInitialState, action) => {
 
 const reducers = combineReducers({
     chatState: userReducer,
-    messages: messagesReducer
+    messages: messagesReducer,
+    areTyping: areTypingReducer
 });
 
 const store = createStore(reducers);
