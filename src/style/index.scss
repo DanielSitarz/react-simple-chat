@@ -3,7 +3,9 @@
 @import 'variables.scss';
 
 body{  
-  font-family: 'Roboto', sans-serif;        
+  font-family: 'Roboto', sans-serif;     
+
+  font-size: 12px;
 }
 
 body, html, body > div{
@@ -18,8 +20,7 @@ body, html, body > div{
 }
 
  button{     
-  border: none;
-  font-size: 1.6rem;
+  border: none;  
   font-weight: 700;            
   background: #03A9F4;        
   color: #ffffff;      
@@ -30,10 +31,6 @@ body, html, body > div{
   }
   &:active{
     background: #1cb05d;        
-  }
-
-  @media screen and (max-width: $mobileBreak){
-    font-size: 1.25rem;    
   }
 } 
 

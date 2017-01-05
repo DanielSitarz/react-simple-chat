@@ -10,8 +10,6 @@ import ChatHeader from '../components/chat/ChatHeader.jsx';
 import ChatMessages from '../components/chat/ChatMessages.jsx';
 import ChatControl from '../components/chat/ChatControl.jsx';
 
-import ChatNameSelectModal from '../components/chat/ChatNameSelectModal';
-
 import NewMessageNotification from '../chat/NewMessageNotification';
 
 /*Third Party*/
@@ -180,20 +178,19 @@ class ChatContainer extends React.Component {
   }   
   render() {
     return (      
-        <div className={chatStyle.Chat}>
-          <ChatNameSelectModal 
-            show={this.state.nameSelectModalOpen} 
-            handleNameChange={this.handleNameChange}/>                    
+        <div className={chatStyle.Chat}>          
           <ChatHeader 
             userName={this.props.userName}
             roomName={this.props.params.roomName} 
             handleNameChangeModalOpen={this.handleNameChangeModalOpen}/>
           <ChatMessages messages={this.props.messages} />
-          {
-            this.props.areTyping.map((e, i) => {
-              return(<div className={chatStyle.isTypingBox} key={i}>{e} is typing...</div>)
-            })
-          }
+          <div className={chatStyle.isTypingBox}>
+            {
+              this.props.areTyping.map((e, i) => {
+                return(<span key={i}>{e} is typing...</span>)
+              })
+            }
+          </div>
           <ChatControl handleSendMessage={this.handleSendMessage} handleMessageTyping={this.handleMessageTyping} />
         </div>      
     )
