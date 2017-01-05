@@ -4,10 +4,8 @@ import style from '../../style/chat/header.scss';
 
 const ChatHeader = ({userName, roomName, handleChangeName, handleChangeRoom}) => (
   <header className={style.header}>      
-    <div className={style.userName}>{userName}</div>  
-    <button onClick={handleChangeName}>Change name</button>
-    <div className={style.roomName}>Room: {roomName}</div>
-    <button onClick={handleChangeRoom}>Change room</button>
+    <div className={style.roomName}>{roomName}</div>    
+    <div className={style.userName}>{userName}</div>          
   </header>
 )
 

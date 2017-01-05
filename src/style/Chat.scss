@@ -10,6 +10,8 @@
     right: 0;
     left: 0;         
 
+    background-color: #FAFAFA;
+
     .messages{        
         flex: 12;
         overflow-y: scroll;          
@@ -36,21 +38,28 @@
         font-size: 100%;
     }
 
-    form{
+    .chatControl{
         flex: 1 0 auto;
         display: flex; 
-        max-height: 4rem;       
-        position: relative;        
-        border-top: 2px solid $mainColor;        
+        max-height: 2rem;       
+        position: relative;                        
+        border-top: 1px solid rgba(0, 0, 0, .25);
         input{      
-            flex: 3;      
+            flex: 3;                  
+
+            color: black;
+
             width: 100%;
             border: none;                              
             text-indent: 1rem;
             padding-right: 0.5rem;
             overflow-y: auto;
             white-space: pre-wrap;
-            word-wrap: break-word;            
+            word-wrap: break-word;     
+
+            &::placeholder{
+                color: rgba(0, 0, 0, .55);
+            }       
         }
         button{   
             flex: 1;      
@@ -61,6 +70,6 @@
 
 .isTypingBox{
     position: fixed;
-    bottom: 4rem;
+    bottom: 2.5rem;
     left: 1rem;
 }
