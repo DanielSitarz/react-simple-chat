@@ -1,16 +1,21 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
 import style from '../../style/Chat.scss';
 
-const ChatControl = ({handleSendMessage, handleMessageTyping}) => (
-  <form onSubmit={handleSendMessage} autoComplete="off" className={style.chatControl}>
-      <input placeholder="Type..." name="message" onChange={handleMessageTyping}/>
-      <button type="submit">Send</button>
-    </form>
-)
-
-ChatControl.PropTypes = {
-  handleSendMessage: PropTypes.func.isRequired,
-  handleMessageTyping: PropTypes.func.isRequired
+class ChatControl extends Component {
+  render(){
+    return(
+      <div autoComplete="off" className={style.chatControl}>
+        <input 
+          placeholder="Type..." 
+          ref="message" 
+          onChange={this.props.handleMessageTyping}/>
+        <button 
+          onClick={(e) => {this.props.handleSendMessage(this.refs.message); }}>
+          Send
+        </button>
+      </div>
+    )
+  }  
 }
 
 export default ChatControl;

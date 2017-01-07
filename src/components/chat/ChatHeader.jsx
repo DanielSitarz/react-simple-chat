@@ -4,8 +4,8 @@ import style from '../../style/chat/header.scss';
 
 const ChatHeader = ({userName, roomName, handleChangeName, handleChangeRoom}) => (
   <header className={style.header}>      
-    <div className={style.roomName}>{roomName}</div>    
-    <div className={style.userName}>{userName}</div>          
+  <div className={style.userName}>{userName}</div>
+    <div className={style.roomName}>{roomName}</div>
   </header>
 )
 

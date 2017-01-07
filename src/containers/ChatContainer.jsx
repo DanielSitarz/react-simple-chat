@@ -2,12 +2,14 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import store from '../store/store';
+import { List, Map } from 'immutable'; 
 
 import chatStyle from '../style/Chat.scss';
 
 /*My Components*/
 import ChatHeader from '../components/chat/ChatHeader.jsx';
 import ChatMessages from '../components/chat/ChatMessages.jsx';
+import ChatAreTyping from '../components/chat/ChatAreTyping.jsx';
 import ChatControl from '../components/chat/ChatControl.jsx';
 
 import NewMessageNotification from '../chat/NewMessageNotification';
@@ -23,20 +25,31 @@ class ChatContainer extends React.Component {
       nameSelectModalOpen: false,      
     };         
 
+    this.chatMessages = null;
+
     this.isTypingTimeout = null;
     this.youAreTyping = false;
 
     this.newMessageNotification = new NewMessageNotification();
+    
+    window.addEventListener('resize', this.scrollToBottom.bind(this));    
 
     this.bindEvents();
     this.setupSocket();    
     this.enterRoom();    
-  }   
+  }
+  componentDidUpdate(){
+    this.saveMessagesToLocalStorage();
+  }
+  saveMessagesToLocalStorage(){        
+    localStorage.setItem(this.props.params.roomName + "_messages", JSON.stringify(this.props.messages));
+  }
   bindEvents(){
-    this.handleSendMessage = this.handleSendMessage.bind(this);
-    this.handleNameChangeModalOpen = this.handleNameChangeModalOpen.bind(this);
+    this.handleSendMessage = this.handleSendMessage.bind(this);    
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleMessageTyping = this.handleMessageTyping.bind(this);    
+    this.handleMessageFocus = this.handleMessageFocus.bind(this);            
+    this.scrollToBottom = this.scrollToBottom.bind(this);        
   }
   setupSocket(){
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');  
@@ -54,10 +67,7 @@ class ChatContainer extends React.Component {
       type: "SET_MSGS",
       msgs: JSON.parse(localStorage.getItem(this.props.params.roomName + "_messages"))
     });  
-     store.dispatch({
-      type: "ADD_MSG",
-      msg: this.createMessageFromServer(this.props.userName + " connected.")
-    });  
+    this.props.addMsg(this.createMessageFromServer(this.props.userName + " connected."));
   }
 
   createMessage(key = (new Date()).getTime(), sender, content){    
@@ -75,41 +85,39 @@ class ChatContainer extends React.Component {
     msg.isFromServer = true;
     return msg;
   }   
-  onReceiveChatMessage(data){                        
+  onReceiveChatMessage(data){
     let msg;
     if(!data.isFromServer){            
       msg = data;
-      this.newMessageNotification.notifyAboutNewMessage();      
+      this.newMessageNotification.notifyAboutNewMessage();
     }else{
       msg = this.createMessageFromServer(data.content);
     }
 
-    store.dispatch({
-      type: "ADD_MSG",
-      msg: msg
-    });  
-  }   
-  handleSendMessage(e) {
-    e.preventDefault();
-    
-    let msg = e.target.message.value;
-
+    this.props.addMsg(msg);
+  }  
+  handleSendMessage(inputElement) {
+    let msg = inputElement.value;    
     if(msg == ""){
       return;      
-    }             
+    }                 
 
-    const newMessage = this.createMessage(undefined, this.props.userName, msg);        
+    inputElement.value = '';
+    inputElement.focus();
 
-    store.dispatch({
-      type: "ADD_MSG",
-      msg: newMessage
-    });                
+    const newMessage = this.createMessage(undefined, this.props.userName, msg);            
+
+    this.props.addMsg(newMessage);
 
     this.socket.emit('chat message', newMessage);
     this.youAreTyping = false;
-    this.socket.emit('stopped typing', this.props.userName);
-
-    e.target.reset();
+    this.socket.emit('stopped typing', this.props.userName);        
+  }  
+  scrollToBottom(){          
+    this.refs.chatMessages.refs.chatMessagesBox.scrollTop = this.refs.chatMessages.refs.chatMessagesBox.scrollHeight;
+  }          
+  handleMessageFocus(){
+    this.scrollToBottom();
   }
   /**
    * Notify others in rooms that you are typing
@@ -150,13 +158,7 @@ class ChatContainer extends React.Component {
     });       
     this.forceUpdate();
   }
-
-  handleNameChangeModalOpen(){
-    let newState = {
-      nameSelectModalOpen: true
-    };
-    this.setState(newState);
-  }
+  
   handleNameChange(newName){        
     let newState = {
       nameSelectModalOpen: false
@@ -169,29 +171,30 @@ class ChatContainer extends React.Component {
       type: "USER_SET_NAME",
       name: newName
     });    
-    store.dispatch({
-      type: "ADD_MSG",
-      msg: this.createMessageFromServer( oldName + " changes name to " + newName + ".")
-    });    
+    
+    this.props.addMsg(this.createMessageFromServer( oldName + " changes name to " + newName + "."));
 
     this.socket.emit('name change', newName);
   }   
   render() {
+    console.log(this.props.messages.toJS());
     return (      
         <div className={chatStyle.Chat}>          
           <ChatHeader 
             userName={this.props.userName}
             roomName={this.props.params.roomName} 
             handleNameChangeModalOpen={this.handleNameChangeModalOpen}/>
-          <ChatMessages messages={this.props.messages} />
-          <div className={chatStyle.isTypingBox}>
-            {
-              this.props.areTyping.map((e, i) => {
-                return(<span key={i}>{e} is typing...</span>)
-              })
-            }
-          </div>
-          <ChatControl handleSendMessage={this.handleSendMessage} handleMessageTyping={this.handleMessageTyping} />
+
+          <ChatMessages 
+            scrollToBottom={this.scrollToBottom}
+            messages={this.props.messages.toJS()} 
+            ref="chatMessages" />
+
+          <ChatAreTyping areTyping={this.props.areTyping}/>
+
+          <ChatControl             
+            handleSendMessage={this.handleSendMessage} 
+            handleMessageTyping={this.handleMessageTyping} />
         </div>      
     )
   }
@@ -205,4 +208,10 @@ const mapStateToProps = function(store) {
   }
 }
 
-export default connect(mapStateToProps)(ChatContainer);
+const mapDispatchToProps = function(dispatch) {  
+  return {
+    addMsg: (msg) => {dispatch({ type: "ADD_MSG", msg: msg });},
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatContainer);

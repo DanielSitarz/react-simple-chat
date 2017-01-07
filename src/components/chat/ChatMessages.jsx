@@ -5,13 +5,9 @@ import ChatMessagesGroup from './ChatMessagesGroup';
 import ChatMessagesGroupFromServer from './ChatMessagesGroupFromServer';
 
 class ChatMessages extends React.Component {  
-  componentDidUpdate(){            
-    this.scrollToBottom();    
-  }
-  scrollToBottom(){
-    const chatMessagesBox = this.refs.chatMessagesBox;
-    chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
-  }    
+  componentDidUpdate(){                
+    this.props.scrollToBottom();
+  }  
   render(){    
     return(
       <ul className={chatStyle.messages} ref="chatMessagesBox">

@@ -1,5 +1,7 @@
 import { createStore, combineReducers } from 'redux';
 import _ from 'lodash/array';
+import { List, Map } from 'immutable';
+
 import randomNameGenerator from '../helpers/randomNameGenerator'
 
 const chatUserInitialState = {
@@ -8,26 +10,24 @@ const chatUserInitialState = {
     roomName: "DogsLovers",    
 }
 
-const chatMessagesInitialState = [];
+const initialMessages = List();
 
 const areTypingInitialState = [];
 
-const messagesReducer = (state = chatMessagesInitialState, action) => {            
+export const messagesReducer = (messages = initialMessages, action) => {            
     switch(action.type){
-        case "SET_MSGS":                                   
-            return action.msgs || {};
+        case "SET_MSGS":                                            
+            return List(action.msgs) || List();
         break;
-        case "ADD_MSG":                       
-            let newState = [...state, action.msg];
-            localStorage.setItem(action.msg.roomName + "_messages", JSON.stringify(newState));
-            return newState;
+        case "ADD_MSG":                        
+            return messages.push(Map(action.msg));
         break;        
     }
 
-    return state;
+    return messages;
 }
 
-const areTypingReducer = (state = areTypingInitialState, action) => {
+export const areTypingReducer = (state = areTypingInitialState, action) => {
     switch(action.type){
         case "IS_TYPING":            
             return [...state, action.who];
@@ -39,13 +39,13 @@ const areTypingReducer = (state = areTypingInitialState, action) => {
     return state;
 }
 
-const userReducer = (state = chatUserInitialState, action) => {            
+export const userReducer = (state = chatUserInitialState, action) => {            
     switch(action.type){
         case "USER_SET_NAME":            
             if(!action.name || action.name.length == 0){
                 action.name = "Anonymous";
             }            
-            return Object.assign({}, ...state, {userName: action.name});
+            return Object.assign(state, {userName: action.name});
         break
     }
     return state;
