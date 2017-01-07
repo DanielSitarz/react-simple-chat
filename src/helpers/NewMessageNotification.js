@@ -1,7 +1,7 @@
 export default class NewMessageNotification {
   constructor () {
     this.newMessageTitleChanger = null
-    this.originalTitle = document.originalTitle
+    this.originalTitle = document.title
     this.isFocused = true
 
     this.titleChangeTime = 1000
@@ -35,8 +35,8 @@ export default class NewMessageNotification {
     this.setNotificationTitle()
 
     let i = 0
-    this.newMessageTitleChanger = setInterval(() => {
-      document.title = (i % 2 === 1) ? this.setNotificationTitle() : this.setOriginalTitle()
+    this.newMessageTitleChanger = setInterval(() => { 
+      (i % 2 === 1) ? this.setNotificationTitle() : this.setOriginalTitle()
       i++
     }, this.titleChangeTime)
   }

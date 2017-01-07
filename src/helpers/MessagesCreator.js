@@ -7,7 +7,7 @@ export default class MessagesCreator {
       key: data.key || new Date().getTime(),
       sender: data.sender || 'Anonymous',
       content: data.content || '',
-      power: data.power || 0,
+      power: data.power || 1.0,
       roomName: this.roomName,
       isFromServer: data.isFromServer || false
     }
@@ -16,7 +16,7 @@ export default class MessagesCreator {
     return this.create({
       sender: 'Chat',
       content: content,
-      power: 0,
+      power: -1,
       isFromServer: true
     })
   }

@@ -13,7 +13,7 @@ class ChatMessages extends React.Component {
       <ul className={chatStyle.messages} ref='chatMessagesBox'>
         {
           groupMessages(this.props.messages).map((group) => {
-            if (group.msgs[0].power === 0 && group.msgs[0].isFromServer) {
+            if (group.msgs[0].power === -1 && group.msgs[0].isFromServer) {
               return (<ChatMessagesGroupFromServer {...group} />)
             } else { return (<ChatMessagesGroup {...group} />) }
           })
