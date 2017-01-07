@@ -1,13 +1,12 @@
-/*React*/
-import React, {Component} from 'react';
-import { Provider } from 'react-redux';
+/* React */
+import React from 'react'
+import { Provider } from 'react-redux'
 
-import store from './store/store';
-import router from './router';
-
+import store from './store/store'
+import router from './router'
 
 export default () => (
-  <Provider store={store}>    
+  <Provider store={store}>
     {router}
-  </Provider>       
+  </Provider>
 )
