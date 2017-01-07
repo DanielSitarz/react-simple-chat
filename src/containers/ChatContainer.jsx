@@ -55,8 +55,8 @@ class ChatContainer extends React.Component {
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/');  
 
     this.socket.on('chat message', this.onReceiveChatMessage.bind(this));    
-    this.socket.on('is typing', this.onSomeoneIsTyping.bind(this));    
-    this.socket.on('stopped typing', this.onSomeoneStoppedTyping.bind(this));    
+    this.socket.on('is typing', this.onTypingStart.bind(this));    
+    this.socket.on('stopped typing', this.onTypingStop.bind(this));    
   }   
   enterRoom(){
     this.socket.emit("enter room", {
@@ -145,18 +145,17 @@ class ChatContainer extends React.Component {
   /**
    * Handle typing notigications from others
    */
-  onSomeoneIsTyping(who){
+  onTypingStart(who){
     store.dispatch({
-      type: "IS_TYPING",
+      type: "TYPING_START",
       who: who
     });                
   }
-  onSomeoneStoppedTyping(who){    
+  onTypingStop(who){    
     store.dispatch({
-      type: "STOPPED_TYPING",
+      type: "TYPING_STOP",
       who: who
-    });       
-    this.forceUpdate();
+    });           
   }
   
   handleNameChange(newName){        
@@ -176,8 +175,7 @@ class ChatContainer extends React.Component {
 
     this.socket.emit('name change', newName);
   }   
-  render() {
-    console.log(this.props.messages.toJS());
+  render() {    
     return (      
         <div className={chatStyle.Chat}>          
           <ChatHeader 

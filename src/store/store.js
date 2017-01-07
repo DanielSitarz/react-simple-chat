@@ -12,7 +12,7 @@ const chatUserInitialState = {
 
 const initialMessages = List();
 
-const areTypingInitialState = [];
+const typingInitialState = List();
 
 export const messagesReducer = (messages = initialMessages, action) => {            
     switch(action.type){
@@ -27,13 +27,13 @@ export const messagesReducer = (messages = initialMessages, action) => {
     return messages;
 }
 
-export const areTypingReducer = (state = areTypingInitialState, action) => {
+export const typingReducer = (state = typingInitialState, action) => {
     switch(action.type){
-        case "IS_TYPING":            
-            return [...state, action.who];
+        case "TYPING_START":            
+            return state.push(action.who);
         break;
-        case "STOPPED_TYPING":
-            return _.pull(state, action.who);
+        case "TYPING_STOP":
+            return state.delete(state.indexOf(action.who));
         break;
     }
     return state;
@@ -54,7 +54,7 @@ export const userReducer = (state = chatUserInitialState, action) => {
 const reducers = combineReducers({
     chatState: userReducer,
     messages: messagesReducer,
-    areTyping: areTypingReducer
+    areTyping: typingReducer
 });
 
 const store = createStore(reducers);
