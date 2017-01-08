@@ -17,6 +17,16 @@ import MessagesCreator from '../helpers/MessagesCreator'
 /* Third Party */
 import io from 'socket.io-client'
 
+/**
+ * Socket consts
+ */
+const USER_ENTER_ROOM = 'user enter room'
+const USER_LEFT_ROOM = 'user left room'
+const USER_SENT_MESSAGE = 'user sent message'
+const USER_IS_TYPING = 'user is typing'
+const USER_STOPPED_TYPING = 'user stopped typing'
+const USER_CHANGED_NAME = 'user changed name'
+
 class ChatContainer extends React.Component {
   constructor (props) {
     super(props)
@@ -50,19 +60,21 @@ class ChatContainer extends React.Component {
   setupSocket () {
     this.socket = io('https://socket-chat-server-to-react.herokuapp.com/')
 
-    this.socket.on('message', this.onReceiveMessage.bind(this))
-    this.socket.on('server message', this.onReceiveServerMessage.bind(this))
-    this.socket.on('is typing', this.onTypingStart.bind(this))
-    this.socket.on('stopped typing', this.onTypingStop.bind(this))
-    this.socket.on('user enter the room', this.onUserEnterTheRoom.bind(this))
+    this.socket.on(USER_SENT_MESSAGE, this.onReceiveMessage.bind(this))
+    this.socket.on(USER_IS_TYPING, this.onTypingStart.bind(this))
+    this.socket.on(USER_STOPPED_TYPING, this.onTypingStop.bind(this))
+
+    this.socket.on(USER_ENTER_ROOM, this.onUserEnterTheRoom.bind(this))
+    this.socket.on(USER_LEFT_ROOM, this.onUserDisconnected.bind(this))
+    this.socket.on(USER_CHANGED_NAME, this.onUserChangedName.bind(this))
   }
   enterRoom () {
-    this.socket.emit('enter room', {
+    this.socket.emit(USER_ENTER_ROOM, {
       userName: this.props.userName,
       roomName: this.props.params.roomName
     })
     this.loadMessagesFromLocalStorage()
-    this.notifyAboutConnectedUser(this.props.userName)
+    this.sendUserConnectedMessage(this.props.userName)
   }
   loadMessagesFromLocalStorage () {
     let loadedMessages = JSON.parse(window.localStorage.getItem(this.props.params.roomName + '_messages'))
@@ -88,7 +100,13 @@ class ChatContainer extends React.Component {
     this.props.addMsg(msg)
   }
   onUserEnterTheRoom (userName) {
-    this.notifyAboutConnectedUser(userName)
+    this.sendUserConnectedMessage(userName)
+  }
+  onUserDisconnected (userName) {
+    this.sendUserDisconnectedMessage(userName)
+  }
+  onUserChangedName (data) {
+    this.sendUserChangedNameMessage(data.oldName, data.newName)
   }
   onTypingStart (who) {
     store.dispatch({
@@ -118,8 +136,8 @@ class ChatContainer extends React.Component {
 
     this.props.addMsg(newMessage)
 
-    this.socket.emit('message', newMessage)
-    this.socket.emit('stopped typing', this.props.userName)
+    this.socket.emit(USER_SENT_MESSAGE, newMessage)
+    this.socket.emit(USER_STOPPED_TYPING, this.props.userName)
 
     this.youAreTyping = false
 
@@ -150,39 +168,44 @@ class ChatContainer extends React.Component {
 
     this.startTypingTimeout()
 
-    this.socket.emit('is typing', this.props.userName)
+    this.socket.emit(USER_IS_TYPING, this.props.userName)
   }
   startTypingTimeout () {
     window.clearTimeout(this.isTypingTimeout)
     this.isTypingTimeout = window.setTimeout(() => {
       this.youAreTyping = false
-      this.socket.emit('stopped typing', this.props.userName)
+      this.socket.emit(USER_STOPPED_TYPING, this.props.userName)
     }, 3000)
   }
 
   handleNameChange (newName) {
-    this.socket.emit('name change', newName)
+    this.socket.emit(USER_CHANGED_NAME, newName)
 
     store.dispatch({
       type: 'USER_SET_NAME',
       name: newName
     })
 
-    this.notifyAboutNameChange(this.props.userName, newName)
+    this.sendUserChangedNameMessage(this.props.userName, newName)
   }
 
   /**
    * Notifiers
    */
-  notifyAboutNameChange (oldName, newName) {
-    let notificationMessage = this.messagesCreator.fromServer(oldName + ' changes name to ' + newName + '.')
+  sendUserChangedNameMessage (oldName, newName) {
+    let msg = this.messagesCreator.fromServer(oldName + ' changes name to ' + newName + '.')
 
-    this.props.addMsg(notificationMessage)
+    this.props.addMsg(msg)
   }
-  notifyAboutConnectedUser (userName) {
-    let notificationMessage = this.messagesCreator.fromServer(userName + ' connected.')
+  sendUserConnectedMessage (userName) {
+    let msg = this.messagesCreator.fromServer(userName + ' connected.')
 
-    this.props.addMsg(notificationMessage)
+    this.props.addMsg(msg)
+  }
+  sendUserDisconnectedMessage (userName) {
+    let msg = this.messagesCreator.fromServer(userName + ' disconnected.')
+
+    this.props.addMsg(msg)
   }
   render () {
     return (
