@@ -1,51 +1,86 @@
 export default class NewMessageNotification {
-  constructor () {
+  constructor (config = {}) {
+    this.config = {
+      titleNotificationText: config.titleNotificationText || 'New message',
+      titleChangeInterval: config.titleChangeInterval || 1000
+    }
+
     this.newMessageTitleChanger = null
     this.originalTitle = document.title
     this.isFocused = true
 
-    this.titleChangeTime = 1000
+    this.bindHandlers()
+    this.addEvents()
+  }
+  bindHandlers () {
+    this.handleFocus = this.handleFocus.bind(this)
+    this.handleBlur = this.handleBlur.bind(this)
+  }
+  addEvents () {
+    window.addEventListener('focus', this.handleFocus, false)
+    window.addEventListener('blur', this.handleBlur, false)
+  }
 
-    this.setupEvents()
+  notify () {
+    if (this.isFocused) return
+
+    this.setNotificationTitle()
+
+    this.runTitleChanger()
   }
-  setupEvents () {
-    window.addEventListener('focus', this.handleFocus.bind(this))
-    window.addEventListener('blur', this.handleBlur.bind(this))
+
+  /**
+   * Title Changer
+   */
+
+  runTitleChanger () {
+    if (this.newMessageTitleChanger) { clearInterval(this.newMessageTitleChanger) }
+
+    let i = 0
+    this.newMessageTitleChanger = setInterval(() => {
+      this.switchTitle(i)
+      i++
+    }, this.config.titleChangeInterval)
   }
+  stopTitleChanger () {
+    window.clearInterval(this.newMessageTitleChanger)
+    this.newMessageTitleChanger = null
+  }
+  switchTitle (i) {
+    if (i % 2 === 1) {
+      this.setNotificationTitle()
+    } else {
+      this.resetTitleToOriginalState()
+    }
+  }
+
+  /**
+   * Title Helpers
+   */
+
+  setDocumentTitle (newTitle) {
+    document.title = newTitle
+  }
+  setNotificationTitle () {
+    this.setDocumentTitle(this.config.titleNotificationText)
+  }
+  resetTitleToOriginalState () {
+    this.setDocumentTitle(this.originalTitle)
+  }
+
+  /**
+  * Events Handlers
+  */
 
   handleFocus () {
     this.isFocused = true
 
     if (!this.newMessageTitleChanger) return
 
-    window.clearInterval(this.newMessageTitleChanger)
-    document.title = this.originalTitle
-
-    this.newMessageTitleChanger = null
+    this.stopTitleChanger()
+    this.resetTitleToOriginalState()
   }
   handleBlur () {
     this.isFocused = false
-  }
-
-  notify () {
-    if (this.isFocused) return
-
-    if (this.newMessageTitleChanger) { clearInterval(this.newMessageTitleChanger) }
-
-    this.setNotificationTitle()
-
-    let i = 0
-    this.newMessageTitleChanger = setInterval(() => { 
-      (i % 2 === 1) ? this.setNotificationTitle() : this.setOriginalTitle()
-      i++
-    }, this.titleChangeTime)
-  }
-
-  setOriginalTitle () {
-    document.title = this.originalTitle
-  }
-
-  setNotificationTitle () {
-    document.title = 'New message'
   }
 }
