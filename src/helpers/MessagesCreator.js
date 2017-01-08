@@ -1,18 +1,17 @@
-export default class MessagesCreator {
-  constructor (roomName) {
-    this.roomName = roomName
-  }
-  create (data) {
+import store from '../store/store'
+
+const messagesCreator = {
+  create: (data) => {
     return {
       key: data.key || new Date().getTime(),
       sender: data.sender || 'Anonymous',
       content: data.content || '',
       power: data.power || 1.0,
-      roomName: this.roomName,
+      roomName: store.getState().chatState.roomName,
       isFromServer: data.isFromServer || false
     }
-  }
-  fromServer (content) {
+  },
+  fromServer: function (content) {
     return this.create({
       sender: 'Chat',
       content: content,
@@ -21,3 +20,5 @@ export default class MessagesCreator {
     })
   }
 }
+
+export default messagesCreator

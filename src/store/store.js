@@ -2,6 +2,7 @@ import { createStore, combineReducers } from 'redux'
 import { List, Map } from 'immutable'
 
 import randomNameGenerator from '../helpers/randomNameGenerator'
+import messagesCreator from '../helpers/messagesCreator'
 
 const chatUserInitialState = {
   userName: randomNameGenerator(),
@@ -14,11 +15,16 @@ const initialMessages = List()
 const typingInitialState = List()
 
 export const messagesReducer = (messages = initialMessages, action) => {
+  let msg
   switch (action.type) {
     case 'SET_MSGS':
       return List(action.msgs) || List()
     case 'ADD_MSG':
-      return messages.push(Map(action.msg))
+      msg = messagesCreator.create(action.msg)
+      return messages.push(Map(msg))
+    case 'USER_ENTER_THE_ROOM':
+      msg = messagesCreator.fromServer(action.userName + ' connected.')
+      return messages.push(Map(msg))
   }
 
   return messages
@@ -41,6 +47,8 @@ export const userReducer = (state = chatUserInitialState, action) => {
         action.name = 'Anonymous'
       }
       return Object.assign(state, {userName: action.name})
+    case 'SET_ROOM_NAME':
+      return Object.assign(state, {roomName: action.roomName})
   }
   return state
 }
