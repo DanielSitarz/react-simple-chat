@@ -29,7 +29,8 @@ describe('Messages reducer', () => {
     sender: 'sender',
     content: 'content',
     power: 1.0,
-    roomName: 'DogsLovers'
+    roomName: 'DogsLovers',
+    isFromServer: false
   }
 
   it('Should add message', () => {

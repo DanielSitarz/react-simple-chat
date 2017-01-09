@@ -1,9 +1,9 @@
 export default class NewMessageNotification {
   constructor (config = {}) {
-    this.config = {
-      titleNotificationText: config.titleNotificationText || 'New message',
-      titleChangeInterval: config.titleChangeInterval || 1000
-    }
+    this.config = Object.assign({
+      titleNotificationText: 'New message',
+      titleChangeInterval: 1000
+    }, config)
 
     this.newMessageTitleChanger = null
     this.originalTitle = document.title

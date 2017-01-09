@@ -25,6 +25,9 @@ export const messagesReducer = (messages = initialMessages, action) => {
     case 'USER_ENTER_THE_ROOM':
       msg = messagesCreator.fromServer(action.userName + ' connected.')
       return messages.push(Map(msg))
+    case 'USER_DISCONNECTED':
+      msg = messagesCreator.fromServer(action.userName + ' disconnected.')
+      return messages.push(Map(msg))
   }
 
   return messages
@@ -32,10 +35,10 @@ export const messagesReducer = (messages = initialMessages, action) => {
 
 export const typingReducer = (state = typingInitialState, action) => {
   switch (action.type) {
-    case 'TYPING_START':
-      return state.push(action.who)
-    case 'TYPING_STOP':
-      return state.delete(state.indexOf(action.who))
+    case 'IS_TYPING':
+      return state.push(action.userName)
+    case 'STOPPED_TYPING':
+      return state.delete(state.indexOf(action.userName))
   }
   return state
 }
@@ -43,9 +46,6 @@ export const typingReducer = (state = typingInitialState, action) => {
 export const userReducer = (state = chatUserInitialState, action) => {
   switch (action.type) {
     case 'USER_SET_NAME':
-      if (!action.name || action.name.length === 0) {
-        action.name = 'Anonymous'
-      }
       return Object.assign(state, {userName: action.name})
     case 'SET_ROOM_NAME':
       return Object.assign(state, {roomName: action.roomName})

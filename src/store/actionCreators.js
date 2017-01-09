@@ -33,3 +33,22 @@ export function userEnterTheRoom (userName) {
   }
 }
 
+export function userDisconnected (userName) {
+  return {
+    type: 'USER_DISCONNECTED',
+    userName: userName
+  }
+}
+
+export function isTyping (userName) {
+  return {
+    type: 'IS_TYPING',
+    userName: userName
+  }
+}
+export function stoppedTyping (userName) {
+  return {
+    type: 'STOPPED_TYPING',
+    userName: userName
+  }
+}
