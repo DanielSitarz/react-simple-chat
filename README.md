@@ -36,9 +36,7 @@ I'm learning React which looks for me just awesome!
 3. Changing nickname.
 4. Changing room without editing page address.
 5. Scroll down when a lot of messages with images.
-4. Server commands like '!users' for a list of users in the room.
-5. Enter should send message...
-6. More tests, more!
-7. Hold send button to send bigger message (like in Messenger with emotes, already have 'power' property associated with message)
-8. Better notifications system (support multiple notifications, e.g. new message and count of new messages)
-9. Ninth todo, because previous lists had 9 points.
+6. Enter should send message...
+7. More tests, more!
+8. Hold send button to send bigger message (like in Messenger with emotes, already have 'power' property associated with message)
+9. Better notifications system (support multiple notifications, e.g. new message and count of new messages)
