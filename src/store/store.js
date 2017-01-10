@@ -9,9 +9,7 @@ const chatUserInitialState = {
   usersInRoom: [],
   roomName: 'DogsLovers'
 }
-
 const initialMessages = List()
-
 const typingInitialState = List()
 
 export const messagesReducer = (messages = initialMessages, action) => {
