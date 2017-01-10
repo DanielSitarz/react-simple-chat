@@ -53,19 +53,22 @@ class ChatContainer extends React.Component {
     store.dispatch(setRoomName(this.props.params.roomName))
     store.dispatch(userEnterTheRoom(this.props.userName))
     this.socket.userEnterRoom(this.props.userName, this.props.roomName)
-
-    this.sendWelcomeMessage()
   }
   sendWelcomeMessage () {
-    store.dispatch(addMessage(messagesCreator.create({
-      sender: 'Daniel',
-      content: 'https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif'
-    })))
+    if (this.props.messages.size === 0) {
+      store.dispatch(addMessage(messagesCreator.create({
+        roomName: 'Hello',
+        sender: 'Daniel',
+        content: 'https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif'
+      })))
+    }
   }
   loadMessagesFromLocalStorage () {
     let loadedMessages = JSON.parse(window.localStorage.getItem(this.props.params.roomName + '_messages'))
     if (loadedMessages) {
       store.dispatch(setMessages(loadedMessages))
+    } else {
+      this.sendWelcomeMessage()
     }
   }
 

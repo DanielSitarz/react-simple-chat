@@ -2,6 +2,21 @@ import React, { Component } from 'react'
 import style from '../../style/Chat.scss'
 
 class ChatControl extends Component {
+  constructor () {
+    super()
+    document.addEventListener('keypress', this.handleKeyPress.bind(this))
+  }
+  componentWillInmount () {
+    document.removeEventListener('keypress')
+  }
+  handleKeyPress (e) {
+    if (e.keyCode === 13) {
+      this.handleSendClick()
+    }
+  }
+  handleSendClick () {
+    this.props.handleSendMessage(this.refs.message)
+  }
   render () {
     return (
       <div autoComplete='off' className={style.chatControl}>
@@ -10,7 +25,7 @@ class ChatControl extends Component {
           ref='message'
           onChange={this.props.handleMessageTyping} />
         <button
-          onClick={(e) => { this.props.handleSendMessage(this.refs.message) }}>
+          onClick={this.handleSendClick.bind(this)}>
           Send
         </button>
       </div>
