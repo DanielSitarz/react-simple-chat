@@ -5,13 +5,19 @@ import messegesGroupStyle from '../style/chat/messagesGroup.scss'
 
 import Message from './Message.jsx'
 
-const getGroupStyle = (sender) => {
-  let isYourGroup = store.getState().chatState.userName === sender
-  return messegesGroupStyle.group + ' ' + (isYourGroup ? messegesGroupStyle.your : '')
+const getStyle = (msgs = []) => {
+  let style = [messegesGroupStyle.group]
+
+  if (msgs.length > 0) {
+    if (store.getState().chatState.userName === msgs[0].sender) style.push(messegesGroupStyle.your)
+    if (msgs[0].isFromServer) style.push(messegesGroupStyle.fromServer)
+  }
+
+  return style.join(' ')
 }
 
 const MessageGroup = ({msgs}) => (
-  <li className={getGroupStyle(msgs[0].sender)}>
+  <li className={getStyle(msgs)}>
     <div className={messegesGroupStyle.sender}>
       <strong>{msgs[0].sender}</strong>
     </div>

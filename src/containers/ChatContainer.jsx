@@ -1,13 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import chatStyle from '../style/Chat.scss'
+import style from '../style/Chat.scss'
 
 /* My Components */
-import Header from '../components/Header.jsx'
-import Messages from '../components/Messages.jsx'
-import AreTyping from '../components/AreTyping.jsx'
-import Control from '../components/Control.jsx'
+import HeaderContainer from './/HeaderContainer'
+import MessagesContainer from './/MessagesContainer'
+import ControlContainer from './ControlContainer'
 
 import NewMessageNotification from '../helpers/NewMessageNotification'
 import messagesCreator from '../helpers/messagesCreator'
@@ -20,37 +19,18 @@ class ChatContainer extends React.Component {
   constructor (props) {
     super(props)
 
-    this.controlProps = {
-      maxSendPower: 500,
-      sendDuration: 5000,
-      messagePowerGainEaseFunc: function (t, b, c, d) {
-        // Circular Easing Out
-        t /= d
-        t--
-        return c * Math.sqrt(1 - t * t) + b
-      },
-      handleSendMessage: this.handleSendMessage.bind(this),
-      handleMessageTyping: this.handleMessageTyping.bind(this)
-    }
-
     this.isTypingTimeout = null
 
     this.newMessageNotification = new NewMessageNotification()
 
-    this.addEventListeners()
+    this.handleSendMessage = this.handleSendMessage.bind(this)
+
     this.setupSocket()
-    this.bindEvents()
     this.enterRoom()
-  }
-  addEventListeners () {
-    window.addEventListener('resize', this.scrollToBottom.bind(this))
   }
   setupSocket () {
     this.socket = new Socket()
     this.socket.onReceiveMessage = (data) => this.newMessageNotification.notify()
-  }
-  bindEvents () {
-    this.scrollToBottom = this.scrollToBottom.bind(this)
   }
   enterRoom () {
     this.loadMessagesFromLocalStorage()
@@ -92,9 +72,6 @@ class ChatContainer extends React.Component {
     this.socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
   }
-  scrollToBottom () {
-    this.refs.chatMessages.refs.chatMessagesBox.scrollTop = this.refs.chatMessages.refs.chatMessagesBox.scrollHeight
-  }
   handleMessageTyping (e) {
     if (this.isTypingTimeout) {
       this.clearTypingTimeout()
@@ -119,24 +96,13 @@ class ChatContainer extends React.Component {
 
   componentDidUpdate () {
     this.saveMessagesToLocalStorage()
-    this.scrollToBottom()
   }
   render () {
     return (
-      <div className={chatStyle.Chat}>
-        <Header
-          userName={this.props.userName}
-          roomName={this.props.roomName}
-          handleNameChangeModalOpen={this.handleNameChangeModalOpen} />
-
-        <Messages
-          scrollToBottom={this.scrollToBottom}
-          messages={this.props.messages.toJS()}
-          ref='chatMessages' />
-
-        <AreTyping areTyping={this.props.areTyping} />
-
-        <Control {...this.controlProps} />
+      <div className={style.Chat}>
+        <HeaderContainer />
+        <MessagesContainer />
+        <ControlContainer handleSendMessage={this.handleSendMessage} />
       </div>
     )
   }
@@ -144,9 +110,6 @@ class ChatContainer extends React.Component {
 
 const mapStateToProps = function (store) {
   return {
-    userName: store.chatState.userName,
-    roomName: store.chatState.roomName,
-    messages: store.messages,
     areTyping: store.areTyping
   }
 }
