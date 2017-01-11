@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import chatStyle from '../style/Chat.scss'
 
 /* My Components */
-import ChatHeader from '../components/chat/ChatHeader.jsx'
-import ChatMessages from '../components/chat/ChatMessages.jsx'
-import ChatAreTyping from '../components/chat/ChatAreTyping.jsx'
-import ChatControl from '../components/chat/ChatControl.jsx'
+import Header from '../components/Header.jsx'
+import Messages from '../components/Messages.jsx'
+import AreTyping from '../components/AreTyping.jsx'
+import Control from '../components/Control.jsx'
 
 import NewMessageNotification from '../helpers/NewMessageNotification'
 import messagesCreator from '../helpers/messagesCreator'
@@ -20,27 +20,20 @@ class ChatContainer extends React.Component {
   constructor (props) {
     super(props)
 
-    this.chatMessagesComponent = null
-
     this.isTypingTimeout = null
 
     this.newMessageNotification = new NewMessageNotification()
 
-    window.addEventListener('resize', this.scrollToBottom.bind(this))
-
+    this.addEventListeners()
     this.setupSocket()
     this.bindEvents()
     this.enterRoom()
   }
-  componentDidUpdate () {
-    this.saveMessagesToLocalStorage()
-  }
-  saveMessagesToLocalStorage () {
-    window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
+  addEventListeners () {
+    window.addEventListener('resize', this.scrollToBottom.bind(this))
   }
   setupSocket () {
     this.socket = new Socket()
-
     this.socket.onReceiveMessage = (data) => this.newMessageNotification.notify()
   }
   bindEvents () {
@@ -54,6 +47,14 @@ class ChatContainer extends React.Component {
     store.dispatch(userEnterTheRoom(this.props.userName))
     this.socket.userEnterRoom(this.props.userName, this.props.roomName)
   }
+  loadMessagesFromLocalStorage () {
+    let loadedMessages = JSON.parse(window.localStorage.getItem(this.props.params.roomName + '_messages'))
+    if (loadedMessages) {
+      store.dispatch(setMessages(loadedMessages))
+    } else {
+      this.sendWelcomeMessage()
+    }
+  }
   sendWelcomeMessage () {
     if (this.props.messages.size === 0) {
       store.dispatch(addMessage(messagesCreator.create({
@@ -63,15 +64,9 @@ class ChatContainer extends React.Component {
       })))
     }
   }
-  loadMessagesFromLocalStorage () {
-    let loadedMessages = JSON.parse(window.localStorage.getItem(this.props.params.roomName + '_messages'))
-    if (loadedMessages) {
-      store.dispatch(setMessages(loadedMessages))
-    } else {
-      this.sendWelcomeMessage()
-    }
+  saveMessagesToLocalStorage () {
+    window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
   }
-
   handleSendMessage (inputField) {
     let msg = inputField.value
     if (msg === '') return
@@ -94,11 +89,9 @@ class ChatContainer extends React.Component {
     inputField.value = ''
     inputField.focus()
   }
-
   scrollToBottom () {
     this.refs.chatMessages.refs.chatMessagesBox.scrollTop = this.refs.chatMessages.refs.chatMessagesBox.scrollHeight
   }
-
   handleMessageTyping (e) {
     if (this.isTypingTimeout) {
       this.clearTypingTimeout()
@@ -121,22 +114,25 @@ class ChatContainer extends React.Component {
     this.isTypingTimeout = null
   }
 
+  componentDidUpdate () {
+    this.saveMessagesToLocalStorage()
+  }
   render () {
     return (
       <div className={chatStyle.Chat}>
-        <ChatHeader
+        <Header
           userName={this.props.userName}
           roomName={this.props.roomName}
           handleNameChangeModalOpen={this.handleNameChangeModalOpen} />
 
-        <ChatMessages
+        <Messages
           scrollToBottom={this.scrollToBottom}
           messages={this.props.messages.toJS()}
           ref='chatMessages' />
 
-        <ChatAreTyping areTyping={this.props.areTyping} />
+        <AreTyping areTyping={this.props.areTyping} />
 
-        <ChatControl
+        <Control
           handleSendMessage={this.handleSendMessage}
           handleMessageTyping={this.handleMessageTyping} />
       </div>

@@ -2,15 +2,15 @@ import React, {PropTypes} from 'react'
 
 import messegesGroupStyle from '../../style/chat/messagesGroup.scss'
 
-import ChatMessage from './ChatMessage.jsx'
+import Message from './Message.jsx'
 
-const ChatMessagesGroupFromServer = ({msgs}) => (
+const MessagesGroupFromServer = ({msgs}) => (
   <li className={messegesGroupStyle.group + ' ' + messegesGroupStyle.fromServer}>
     <ul>
       {
         msgs.map((msg) => {
           return (
-            <ChatMessage {...msg} />
+            <Message {...msg} />
           )
         })
       }
@@ -18,8 +18,8 @@ const ChatMessagesGroupFromServer = ({msgs}) => (
   </li>
 )
 
-ChatMessagesGroupFromServer.PropTypes = {
+MessagesGroupFromServer.PropTypes = {
   msgs: PropTypes.array
 }
 
-export default ChatMessagesGroupFromServer
+export default MessagesGroupFromServer

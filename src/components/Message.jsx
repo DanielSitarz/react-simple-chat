@@ -2,7 +2,7 @@ import React from 'react'
 
 import chatStyle from '../../style/Chat.scss'
 
-const ChatMessage = ({content}) => (
+const Message = ({content}) => (
   <li className={chatStyle.message}>
     {parseMessage(content)}
   </li>
@@ -34,4 +34,4 @@ const parseMessage = (msg) => {
   return msg
 }
 
-export default ChatMessage
+export default Message

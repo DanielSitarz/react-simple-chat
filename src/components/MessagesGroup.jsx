@@ -3,14 +3,14 @@ import store from '../../store/store'
 
 import messegesGroupStyle from '../../style/chat/messagesGroup.scss'
 
-import ChatMessage from './ChatMessage.jsx'
+import Message from './Message.jsx'
 
 const getGroupStyle = (sender) => {
   let isYourGroup = store.getState().chatState.userName === sender
   return messegesGroupStyle.group + ' ' + (isYourGroup ? messegesGroupStyle.your : '')
 }
 
-const ChatMessageGroup = ({msgs}) => (
+const MessageGroup = ({msgs}) => (
   <li className={getGroupStyle(msgs[0].sender)}>
     <div className={messegesGroupStyle.sender}>
       <strong>{msgs[0].sender}</strong>
@@ -19,7 +19,7 @@ const ChatMessageGroup = ({msgs}) => (
       {
         msgs.map((msg) => {
           return (
-            <ChatMessage {...msg} />
+            <Message {...msg} />
           )
         })
       }
@@ -27,8 +27,8 @@ const ChatMessageGroup = ({msgs}) => (
   </li>
 )
 
-ChatMessageGroup.PropTypes = {
+MessageGroup.PropTypes = {
   msgs: PropTypes.array
 }
 
-export default ChatMessageGroup
+export default MessageGroup

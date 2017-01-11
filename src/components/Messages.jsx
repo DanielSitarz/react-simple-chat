@@ -1,10 +1,10 @@
 import React from 'react'
 import chatStyle from '../../style/Chat.scss'
 
-import ChatMessagesGroup from './ChatMessagesGroup'
-import ChatMessagesGroupFromServer from './ChatMessagesGroupFromServer'
+import MessagesGroup from './MessagesGroup'
+import MessagesGroupFromServer from './MessagesGroupFromServer'
 
-class ChatMessages extends React.Component {
+class Messages extends React.Component {
   componentDidUpdate () {
     this.props.scrollToBottom()
   }
@@ -14,8 +14,8 @@ class ChatMessages extends React.Component {
         {
           groupMessages(this.props.messages).map((group) => {
             if (group.msgs[0].power === -1 && group.msgs[0].isFromServer) {
-              return (<ChatMessagesGroupFromServer {...group} />)
-            } else { return (<ChatMessagesGroup {...group} />) }
+              return (<MessagesGroupFromServer {...group} />)
+            } else { return (<MessagesGroup {...group} />) }
           })
         }
       </ul>
@@ -45,4 +45,4 @@ const groupMessages = (msgs = []) => {
   return groupedMessages
 }
 
-export default ChatMessages
+export default Messages

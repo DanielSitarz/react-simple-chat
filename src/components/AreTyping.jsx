@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import style from '../../style/Chat.scss'
 
-const ChatAreTyping = ({areTyping}) => (
+const AreTyping = ({areTyping}) => (
   <div className={style.isTypingBox}>
     {
         areTyping.map((e, i) => {
@@ -11,8 +11,8 @@ const ChatAreTyping = ({areTyping}) => (
   </div>
 )
 
-ChatAreTyping.PropTypes = {
+AreTyping.PropTypes = {
   areTyping: PropTypes.array
 }
 
-export default ChatAreTyping
+export default AreTyping

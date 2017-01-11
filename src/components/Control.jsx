@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import style from '../../style/Chat.scss'
 
-class ChatControl extends Component {
+class Control extends Component {
   constructor () {
     super()
     document.addEventListener('keypress', this.handleKeyPress.bind(this))
@@ -33,4 +33,4 @@ class ChatControl extends Component {
   }
 }
 
-export default ChatControl
+export default Control
