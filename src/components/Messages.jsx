@@ -1,5 +1,5 @@
 import React from 'react'
-import chatStyle from '../../style/Chat.scss'
+import chatStyle from '../style/Chat.scss'
 
 import MessagesGroup from './MessagesGroup'
 import MessagesGroupFromServer from './MessagesGroupFromServer'

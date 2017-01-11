@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react'
 
-import messegesGroupStyle from '../../style/chat/messagesGroup.scss'
+import messegesGroupStyle from '../style/chat/messagesGroup.scss'
 
 import Message from './Message.jsx'
 

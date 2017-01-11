@@ -20,6 +20,19 @@ class ChatContainer extends React.Component {
   constructor (props) {
     super(props)
 
+    this.controlProps = {
+      maxSendPower: 500,
+      sendDuration: 5000,
+      messagePowerGainEaseFunc: function (t, b, c, d) {
+        // Circular Easing Out
+        t /= d
+        t--
+        return c * Math.sqrt(1 - t * t) + b
+      },
+      handleSendMessage: this.handleSendMessage.bind(this),
+      handleMessageTyping: this.handleMessageTyping.bind(this)
+    }
+
     this.isTypingTimeout = null
 
     this.newMessageNotification = new NewMessageNotification()
@@ -37,8 +50,6 @@ class ChatContainer extends React.Component {
     this.socket.onReceiveMessage = (data) => this.newMessageNotification.notify()
   }
   bindEvents () {
-    this.handleSendMessage = this.handleSendMessage.bind(this)
-    this.handleMessageTyping = this.handleMessageTyping.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
   }
   enterRoom () {
@@ -67,13 +78,11 @@ class ChatContainer extends React.Component {
   saveMessagesToLocalStorage () {
     window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
   }
-  handleSendMessage (inputField) {
-    let msg = inputField.value
-    if (msg === '') return
-
+  handleSendMessage (data) {
     const newMessage = messagesCreator.create({
       sender: this.props.userName,
-      content: msg
+      content: data.content,
+      power: data.power
     })
 
     store.dispatch(addMessage(newMessage))
@@ -82,12 +91,6 @@ class ChatContainer extends React.Component {
     store.dispatch(stoppedTyping(this.props.userName))
     this.socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
-
-    this.resetMessageInputField(inputField)
-  }
-  resetMessageInputField (inputField) {
-    inputField.value = ''
-    inputField.focus()
   }
   scrollToBottom () {
     this.refs.chatMessages.refs.chatMessagesBox.scrollTop = this.refs.chatMessages.refs.chatMessagesBox.scrollHeight
@@ -116,6 +119,7 @@ class ChatContainer extends React.Component {
 
   componentDidUpdate () {
     this.saveMessagesToLocalStorage()
+    this.scrollToBottom()
   }
   render () {
     return (
@@ -132,9 +136,7 @@ class ChatContainer extends React.Component {
 
         <AreTyping areTyping={this.props.areTyping} />
 
-        <Control
-          handleSendMessage={this.handleSendMessage}
-          handleMessageTyping={this.handleMessageTyping} />
+        <Control {...this.controlProps} />
       </div>
     )
   }

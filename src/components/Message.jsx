@@ -1,9 +1,9 @@
 import React from 'react'
 
-import chatStyle from '../../style/Chat.scss'
+import chatStyle from '../style/Chat.scss'
 
-const Message = ({content}) => (
-  <li className={chatStyle.message}>
+const Message = ({content, power}) => (
+  <li className={chatStyle.message} style={{fontSize: power + '%'}}>
     {parseMessage(content)}
   </li>
 )

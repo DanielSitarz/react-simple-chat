@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import style from '../../style/chat/header.scss'
+import style from '../style/chat/header.scss'
 
 const Header = ({userName, roomName, handleChangeName, handleChangeRoom}) => (
   <header className={style.header}>

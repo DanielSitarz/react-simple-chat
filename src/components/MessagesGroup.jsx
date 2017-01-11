@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
-import store from '../../store/store'
+import store from '../store/store'
 
-import messegesGroupStyle from '../../style/chat/messagesGroup.scss'
+import messegesGroupStyle from '../style/chat/messagesGroup.scss'
 
 import Message from './Message.jsx'
 

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import style from '../../style/Chat.scss'
+import style from '../style/Chat.scss'
 
 const AreTyping = ({areTyping}) => (
   <div className={style.isTypingBox}>
