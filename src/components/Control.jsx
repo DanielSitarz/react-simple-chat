@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import style from '../style/Chat.scss'
 
-class Control extends Component {
+class Control extends PureComponent {
   constructor (props) {
     super()
 
@@ -18,19 +18,20 @@ class Control extends Component {
   }
   handleSendMessage () {
     this.props.handleSendMessage({
-      content: this.refs.message.value
+      content: this.messageInput.value
     })
 
-    this.refs.message.value = ''
-    this.refs.message.focus()
+    this.messageInput.value = ''
+    this.messageInput.focus()
   }
   render () {
     return (
       <div autoComplete='off' className={style.chatControl}>
         <input
           placeholder='Type...'
-          ref='message'
-          onChange={this.props.handleMessageTyping} />
+          ref={(ref) => { this.messageInput = ref }}
+          onChange={this.props.handleMessageTyping}
+        />
         <button onClick={(e) => { this.handleSendMessage(e) }}>
           Send
         </button>

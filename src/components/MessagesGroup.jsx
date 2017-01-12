@@ -16,22 +16,24 @@ const getStyle = (msgs = []) => {
   return style.join(' ')
 }
 
-const MessageGroup = ({msgs}) => (
-  <li className={getStyle(msgs)}>
-    <div className={messegesGroupStyle.sender}>
-      <strong>{msgs[0].sender}</strong>
-    </div>
-    <ul>
-      {
-        msgs.map((msg) => {
-          return (
-            <Message {...msg} />
-          )
-        })
-      }
-    </ul>
-  </li>
-)
+function MessageGroup ({msgs}) {
+  return (
+    <li className={getStyle(msgs)}>
+      <div className={messegesGroupStyle.sender}>
+        <strong>{msgs[0].sender}</strong>
+      </div>
+      <ul>
+        {
+          msgs.map((msg) => {
+            return (
+              <Message {...msg} />
+            )
+          })
+        }
+      </ul>
+    </li>
+  )
+}
 
 MessageGroup.PropTypes = {
   msgs: PropTypes.array

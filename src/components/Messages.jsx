@@ -1,4 +1,5 @@
 import React from 'react'
+import Immutable from 'immutable'
 
 import style from '../style/Chat.scss'
 
@@ -24,12 +25,16 @@ class Messages extends React.Component {
   isNextSenderDifferent (msgs, currentIndex) {
     return msgs[currentIndex].sender !== msgs[currentIndex + 1].sender
   }
+
+  shouldComponentUpdate (prevProps) {
+    return !Immutable.is(this.props.messages, prevProps.messages)
+  }
   componentDidUpdate () {
-    this.refs.chatMessagesBox.scrollTop = this.refs.chatMessagesBox.scrollHeight
+    this.container.scrollTop = this.container.scrollHeight
   }
   render () {
     return (
-      <ul className={style.messagesContainer} ref='chatMessagesBox'>
+      <ul className={style.messagesContainer} ref={(ref) => { this.container = ref }}>
         {
           this.groupMessages(this.props.messages.toJS()).map((msgs) => {
             return (<MessagesGroup key={msgs[0].key} msgs={msgs} />)

@@ -9,7 +9,7 @@ const parseMessage = (msg) => {
   if (URLCheckPattern.test(msg)) {
     if (imgCheckPattern.test(msg)) {
       return (
-        <img src={msg} />
+        <img src={msg} role='presentation' />
       )
     }
 
@@ -28,10 +28,12 @@ const parseMessage = (msg) => {
   return msg
 }
 
-const Message = ({content, power}) => (
-  <li className={chatStyle.message} style={{fontSize: power + '%'}}>
-    {parseMessage(content)}
-  </li>
-)
+function Message ({content, power}) {
+  return (
+    <li className={chatStyle.message} style={{fontSize: power + '%'}}>
+      {parseMessage(content)}
+    </li>
+  )
+}
 
 export default Message
