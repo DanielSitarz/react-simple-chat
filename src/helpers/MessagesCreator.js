@@ -6,7 +6,7 @@ const messagesCreator = {
       key: new Date().getTime(),
       sender: 'Anonymous',
       content: '',
-      power: 1.0,
+      power: 100,
       roomName: store.getState().chatState.roomName,
       isFromServer: false
     }, data)
@@ -15,7 +15,6 @@ const messagesCreator = {
     return this.create({
       sender: 'Chat',
       content: content,
-      power: -1,
       isFromServer: true
     })
   }

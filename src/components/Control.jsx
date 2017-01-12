@@ -1,56 +1,28 @@
 import React, { Component } from 'react'
+
 import style from '../style/Chat.scss'
 
 class Control extends Component {
   constructor (props) {
     super()
 
-    this.minSendPower = 100
-    this.sendPower = this.minSendPower
-    this.isHolding = false
-    this.keyDownStartTime = 0
-
-    this.sendPowerMaxChange = props.maxSendPower - 100
-
-    document.addEventListener('keydown', this.handleKeyDown.bind(this))
-    document.addEventListener('keyup', this.handleKeyUp.bind(this))
+    document.addEventListener('keypress', this.handleKeyPress.bind(this))
   }
   componentWillUnmount () {
-    document.removeEventListener('keydown')
-    document.removeEventListener('keyup')
+    document.removeEventListener('keypress')
   }
-  handleKeyDown (e) {
+  handleKeyPress (e) {
     if (e.keyCode === 13) {
-      if (this.isHolding === false) {
-        this.keyDownStartTime = new Date().getTime()
-        this.isHolding = true
-      }
-      this.sendPower = this.props.messagePowerGainEaseFunc(new Date().getTime() - this.keyDownStartTime, this.minSendPower, this.sendPowerMaxChange, this.props.sendDuration)
-      if (this.sendPower > this.props.maxSendPower) {
-        this.sendPower = this.minSendPower
-        this.isHolding = false
-        return false
-      }
+      this.handleSendMessage()
     }
   }
-  handleKeyUp (e) {
-    if (e.keyCode === 13) {
-      this.sendMessage()
-    }
-  }
-  sendMessage () {
-    this.isHolding = false
-
+  handleSendMessage () {
     this.props.handleSendMessage({
-      content: this.refs.message.value,
-      power: this.sendPower
+      content: this.refs.message.value
     })
-    this.sendPower = this.minSendPower
+
     this.refs.message.value = ''
     this.refs.message.focus()
-  }
-  handleSendClick () {
-    this.sendMessage()
   }
   render () {
     return (
@@ -59,8 +31,7 @@ class Control extends Component {
           placeholder='Type...'
           ref='message'
           onChange={this.props.handleMessageTyping} />
-        <button
-          onClick={this.handleSendClick.bind(this)}>
+        <button onClick={(e) => { this.handleSendMessage(e) }}>
           Send
         </button>
       </div>

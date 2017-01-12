@@ -38,6 +38,9 @@ $defaultMessageBackground: #ECECEC;
         background-color: transparent;
         margin-top: -0.5rem;
         margin-bottom: 1rem;
+        .sender{
+            display: none;
+        }
         li{
             display: inline-block;          
             margin-right: 0.5rem;                          

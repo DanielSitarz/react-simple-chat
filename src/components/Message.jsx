@@ -2,12 +2,6 @@ import React from 'react'
 
 import chatStyle from '../style/Chat.scss'
 
-const Message = ({content, power}) => (
-  <li className={chatStyle.message} style={{fontSize: power + '%'}}>
-    {parseMessage(content)}
-  </li>
-)
-
 const URLCheckPattern = new RegExp('http://|https://|www.|ftp:')
 const imgCheckPattern = new RegExp('.*(jpeg|jpg|png|gif|bmp)$')
 const youtubeCheckPattern = new RegExp('youtube|youtu.be')
@@ -33,5 +27,11 @@ const parseMessage = (msg) => {
 
   return msg
 }
+
+const Message = ({content, power}) => (
+  <li className={chatStyle.message} style={{fontSize: power + '%'}}>
+    {parseMessage(content)}
+  </li>
+)
 
 export default Message

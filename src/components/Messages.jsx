@@ -1,19 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { List } from 'immutable'
 
 import style from '../style/Chat.scss'
 
-import MessagesGroup from '../components/MessagesGroup'
+import MessagesGroup from './MessagesGroup'
 
-class MessagesContainer extends React.Component {
-  constructor () {
-    super()
-
-    this.state = {
-      groupedMessages: List()
-    }
-  }
+class Messages extends React.Component {
   groupMessages (msgs = []) {
     let groupedMessages = []
     let messagesToGroup = []
@@ -30,9 +21,11 @@ class MessagesContainer extends React.Component {
     }
     return groupedMessages
   }
-
   isNextSenderDifferent (msgs, currentIndex) {
     return msgs[currentIndex].sender !== msgs[currentIndex + 1].sender
+  }
+  componentDidUpdate () {
+    this.refs.chatMessagesBox.scrollTop = this.refs.chatMessagesBox.scrollHeight
   }
   render () {
     return (
@@ -47,10 +40,4 @@ class MessagesContainer extends React.Component {
   }
 }
 
-const mapStateToProps = function (store) {
-  return {
-    messages: store.messages
-  }
-}
-
-export default connect(mapStateToProps)(MessagesContainer)
+export default Messages

@@ -4,9 +4,10 @@ import { connect } from 'react-redux'
 import style from '../style/Chat.scss'
 
 /* My Components */
-import HeaderContainer from './/HeaderContainer'
-import MessagesContainer from './/MessagesContainer'
-import ControlContainer from './ControlContainer'
+import Header from '../components/Header'
+import Messages from '../components/Messages'
+import Control from '../components/Control'
+import AreTyping from '../components/AreTyping'
 
 import NewMessageNotification from '../helpers/NewMessageNotification'
 import messagesCreator from '../helpers/messagesCreator'
@@ -24,6 +25,7 @@ class ChatContainer extends React.Component {
     this.newMessageNotification = new NewMessageNotification()
 
     this.handleSendMessage = this.handleSendMessage.bind(this)
+    this.handleMessageTyping = this.handleMessageTyping.bind(this)
 
     this.setupSocket()
     this.enterRoom()
@@ -36,7 +38,7 @@ class ChatContainer extends React.Component {
     this.loadMessagesFromLocalStorage()
     store.dispatch(setRoomName(this.props.params.roomName))
     store.dispatch(userEnterTheRoom(this.props.userName))
-    this.socket.userEnterRoom(this.props.userName, this.props.roomName)
+    this.socket.userEnterRoom(this.props.userName, this.props.params.roomName)
   }
   loadMessagesFromLocalStorage () {
     let loadedMessages = JSON.parse(window.localStorage.getItem(this.props.params.roomName + '_messages'))
@@ -48,22 +50,23 @@ class ChatContainer extends React.Component {
   }
   sendWelcomeMessage () {
     if (this.props.messages.size === 0) {
-      store.dispatch(addMessage(messagesCreator.create({
+      let helloMsg = messagesCreator.create({
         roomName: 'Hello',
         sender: 'Daniel',
         content: 'https://media.giphy.com/media/ASd0Ukj0y3qMM/giphy.gif'
-      })))
+      })
+      store.dispatch(addMessage(helloMsg))
     }
   }
   saveMessagesToLocalStorage () {
     window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
   }
   handleSendMessage (data) {
-    const newMessage = messagesCreator.create({
-      sender: this.props.userName,
-      content: data.content,
-      power: data.power
-    })
+    let msgData = Object.assign({
+      sender: this.props.userName
+    }, data)
+
+    const newMessage = messagesCreator.create(msgData)
 
     store.dispatch(addMessage(newMessage))
     this.socket.userSentMessage(newMessage)
@@ -100,9 +103,10 @@ class ChatContainer extends React.Component {
   render () {
     return (
       <div className={style.Chat}>
-        <HeaderContainer />
-        <MessagesContainer />
-        <ControlContainer handleSendMessage={this.handleSendMessage} />
+        <Header roomName={this.props.roomName} userName={this.props.userName} />
+        <Messages messages={this.props.messages} />
+        <AreTyping areTyping={this.props.areTyping} />
+        <Control handleSendMessage={this.handleSendMessage} handleMessageTyping={this.handleMessageTyping} />
       </div>
     )
   }
@@ -110,7 +114,10 @@ class ChatContainer extends React.Component {
 
 const mapStateToProps = function (store) {
   return {
-    areTyping: store.areTyping
+    userName: store.chatState.userName,
+    roomName: store.chatState.roomName,
+    areTyping: store.areTyping,
+    messages: store.messages
   }
 }
 
