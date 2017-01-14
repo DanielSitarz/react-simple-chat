@@ -17,7 +17,8 @@
   "author": "Daniel Sitarz",
   "license": "MIT",
   "homepage": "https://github.com/DanielSitarz/react-simple-chat",
-  "dependencies": {    
+  "dependencies": {
+    "classnames": "^2.2.5",
     "immutable": "^3.8.1",
     "node-sass": "^3.13.0",
     "react": "15.4.1",

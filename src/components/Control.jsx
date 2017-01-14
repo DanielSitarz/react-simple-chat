@@ -18,16 +18,18 @@ class Control extends PureComponent {
   }
   handleSendMessage () {
     this.props.handleSendMessage({
-      content: this.messageInput.value
+      content: this.messageInput.textContent
     })
 
-    this.messageInput.value = ''
+    this.messageInput.textContent = ''
     this.messageInput.focus()
   }
   render () {
     return (
       <div autoComplete='off' className={style.chatControl}>
-        <input
+        <div
+          className={style.messageInput}
+          contentEditable
           placeholder='Type...'
           ref={(ref) => { this.messageInput = ref }}
           onChange={this.props.handleMessageTyping}
