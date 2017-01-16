@@ -6,7 +6,7 @@ function AreTyping ({areTyping}) {
     <div className={style.isTypingBox}>
       {
           areTyping.map((e, i) => {
-            return (<span key={i}>{e} is typing... </span>)
+            return (<span key={i}>{e} is typing...</span>)
           })
       }
     </div>
