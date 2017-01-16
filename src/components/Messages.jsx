@@ -6,24 +6,25 @@ import style from '../style/Chat.scss'
 import MessagesGroup from './MessagesGroup'
 
 class Messages extends React.Component {
-  groupMessages (msgs = []) {
-    let groupedMessages = []
-    let messagesToGroup = []
+  groupedMessages (msgs = []) {
+    return msgs
+      .reduce((groups, msg) => {
+        if (groups.length === 0) {
+          groups[0] = [msg]
+          return groups
+        }
 
-    let i = 0
-    while (i < msgs.length) {
-      messagesToGroup.push(msgs[i])
-      let nextGroup = msgs[i + 1]
-      if (nextGroup === undefined || this.isNextSenderDifferent(msgs, i)) {
-        groupedMessages.push(messagesToGroup)
-        messagesToGroup = []
-      }
-      i++
-    }
-    return groupedMessages
-  }
-  isNextSenderDifferent (msgs, currentIndex) {
-    return msgs[currentIndex].sender !== msgs[currentIndex + 1].sender
+        if (groups[groups.length - 1][0].sender !== msg.sender) {
+          groups.push([])
+        }
+
+        groups[groups.length - 1].push(msg)
+
+        return groups
+      }, [])
+      .map((msgs) => {
+        return (<MessagesGroup key={msgs[0].key} msgs={msgs} />)
+      })
   }
 
   shouldComponentUpdate (prevProps) {
@@ -36,9 +37,7 @@ class Messages extends React.Component {
     return (
       <ul className={style.messagesContainer} ref={(ref) => { this.container = ref }}>
         {
-          this.groupMessages(this.props.messages.toJS()).map((msgs) => {
-            return (<MessagesGroup key={msgs[0].key} msgs={msgs} />)
-          })
+          this.groupedMessages(this.props.messages.toJS())
         }
       </ul>
     )
