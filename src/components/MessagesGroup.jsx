@@ -16,11 +16,15 @@ const getStyle = (msgs = []) => {
   return style.join(' ')
 }
 
+function parseTime (ms) {
+  return new Date(ms).toISOString().slice(11, -5)
+}
+
 function MessageGroup ({msgs}) {
   return (
     <li className={getStyle(msgs)}>
       <div className={messegesGroupStyle.sender}>
-        <strong>{msgs[0].sender}</strong>
+        <strong>{msgs[0].sender}</strong> - <span>{parseTime(msgs[msgs.length - 1].key)}</span>
       </div>
       <ul>
         {

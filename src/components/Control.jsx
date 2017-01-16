@@ -32,7 +32,7 @@ class Control extends PureComponent {
           contentEditable
           placeholder='Type...'
           ref={(ref) => { this.messageInput = ref }}
-          onChange={this.props.handleMessageTyping}
+          onInput={this.props.handleMessageTyping}
         />
         <button onClick={(e) => { this.handleSendMessage(e) }}>
           Send
