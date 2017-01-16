@@ -17,7 +17,7 @@ const getStyle = (msgs = []) => {
 }
 
 function parseTime (ms) {
-  return new Date(ms).toISOString().slice(11, -5)
+  return new Date(ms).toLocaleTimeString()
 }
 
 function MessageGroup ({msgs}) {
