@@ -6,20 +6,18 @@ import style from '../style/Chat.scss'
 import MessagesGroup from './MessagesGroup'
 
 class Messages extends React.Component {
-  groupedMessages (msgs = []) {
+  groupMessages (msgs = []) {
     return msgs
       .reduce((groups, msg) => {
-        if (groups.length === 0) {
+        if (groups.length > 0) {
+          if (msg.sender && groups[groups.length - 1][0].sender === msg.sender) {
+            groups[groups.length - 1].push(msg)
+          } else {
+            groups[groups.length] = [msg]
+          }
+        } else {
           groups[0] = [msg]
-          return groups
         }
-
-        if (groups[groups.length - 1][0].sender !== msg.sender) {
-          groups.push([])
-        }
-
-        groups[groups.length - 1].push(msg)
-
         return groups
       }, [])
       .map((msgs) => {
@@ -37,7 +35,7 @@ class Messages extends React.Component {
     return (
       <ul className={style.messagesContainer} ref={(ref) => { this.container = ref }}>
         {
-          this.groupedMessages(this.props.messages.toJS())
+          this.groupMessages(this.props.messages.toJS())
         }
       </ul>
     )
