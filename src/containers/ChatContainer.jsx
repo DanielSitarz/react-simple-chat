@@ -26,6 +26,7 @@ class ChatContainer extends React.Component {
 
     this.handleSendMessage = this.handleSendMessage.bind(this)
     this.handleMessageTyping = this.handleMessageTyping.bind(this)
+    this.acceptMessage = this.acceptMessage.bind(this)
 
     this.setupSocket()
     this.enterRoom()
@@ -69,7 +70,9 @@ class ChatContainer extends React.Component {
     const newMessage = messagesCreator.create(msgData)
 
     store.dispatch(addMessage(newMessage))
-    this.socket.userSentMessage(newMessage)
+  }
+  acceptMessage () {
+    this.socket.userSentMessage(this.props.messages.last().toJS())
 
     store.dispatch(stoppedTyping(this.props.userName))
     this.socket.userStoppedTyping(this.props.userName)
@@ -106,7 +109,11 @@ class ChatContainer extends React.Component {
         <Header roomName={this.props.roomName} userName={this.props.userName} />
         <Messages messages={this.props.messages} />
         <AreTyping areTyping={this.props.areTyping} />
-        <Control handleSendMessage={this.handleSendMessage} handleMessageTyping={this.handleMessageTyping} />
+        <Control
+          handleSendMessage={this.handleSendMessage}
+          handleMessageTyping={this.handleMessageTyping}
+          acceptMessage={this.acceptMessage}
+        />
       </div>
     )
   }

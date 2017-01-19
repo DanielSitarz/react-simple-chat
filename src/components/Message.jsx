@@ -1,7 +1,6 @@
 import React from 'react'
 import chatStyle from '../style/Chat.scss'
 
-
 const img = (src) => <img src={src} role='presentation' />
 const link = (src) => <a href={src} target='_blank'>{src}</a>
 const video = (src) => <iframe width='560' height='315' src={src} frameBorder='0' allowFullScreen />

@@ -20,9 +20,11 @@ export const messagesReducer = (messages = initialMessages, action) => {
     case 'ADD_MSG':
       msg = messagesCreator.create(action.msg)
       return messages.push(Map(msg))
+    case 'DELETE_LAST_MSG':
+      return messages.pop()
     case 'SET_LAST_MESSAGE_POWER':
-      return messages.update(-1, (v) => {
-        return v.set('power', action.power)
+      return messages.update(-1, (m) => {
+        return m.set('power', action.power)
       })
     case 'USER_ENTER_THE_ROOM':
       msg = messagesCreator.fromServer(action.userName + ' connected.')
