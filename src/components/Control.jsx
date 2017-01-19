@@ -17,6 +17,8 @@ class Control extends PureComponent {
     }
   }
   handleSendMessage () {
+    if (this.messageInput.textContent === '') return
+
     this.props.handleSendMessage({
       content: this.messageInput.textContent
     })
@@ -34,7 +36,10 @@ class Control extends PureComponent {
           ref={(ref) => { this.messageInput = ref }}
           onInput={this.props.handleMessageTyping}
         />
-        <button onClick={(e) => { this.handleSendMessage(e) }}>
+        <button
+          onClick={(e) => { this.handleSendMessage(e) }}
+          onMouseDown={(e) => { console.log('dooown') }}
+        >
           Send
         </button>
       </div>
