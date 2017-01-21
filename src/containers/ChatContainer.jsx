@@ -24,7 +24,7 @@ class ChatContainer extends React.Component {
 
     this.newMessageNotification = new NewMessageNotification()
 
-    this.handleSendMessage = this.handleSendMessage.bind(this)
+    this.setPendingMessage = this.setPendingMessage.bind(this)
     this.handleMessageTyping = this.handleMessageTyping.bind(this)
     this.acceptMessage = this.acceptMessage.bind(this)
 
@@ -62,19 +62,27 @@ class ChatContainer extends React.Component {
   saveMessagesToLocalStorage () {
     window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
   }
-  handleSendMessage (data) {
+  setPendingMessage (data) {
     let msgData = Object.assign({
       sender: this.props.userName
     }, data)
 
     const newMessage = messagesCreator.create(msgData)
 
-    store.dispatch(addMessage(newMessage))
+    store.dispatch({
+      type: 'SET_PENDING_MSG',
+      msg: newMessage
+    })
   }
   acceptMessage () {
-    this.socket.userSentMessage(this.props.messages.last().toJS())
+    this.socket.userSentMessage(this.props.pendingMessage.toJS())
+
+    let pendingMsg = this.props.pendingMessage.toJS()
 
     store.dispatch(stoppedTyping(this.props.userName))
+    store.dispatch({type: 'DELETE_PENDING_MSG'})
+    store.dispatch({type: 'ADD_MSG', msg: pendingMsg})
+
     this.socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
   }
@@ -104,13 +112,19 @@ class ChatContainer extends React.Component {
     this.saveMessagesToLocalStorage()
   }
   render () {
+    let messages = this.props.messages
+
+    if (this.props.pendingMessage) {
+      messages = messages.push(this.props.pendingMessage)
+    }
+
     return (
       <div className={style.Chat}>
         <Header roomName={this.props.roomName} userName={this.props.userName} />
-        <Messages messages={this.props.messages} />
+        <Messages messages={messages} />
         <AreTyping areTyping={this.props.areTyping} />
         <Control
-          handleSendMessage={this.handleSendMessage}
+          setPendingMessage={this.setPendingMessage}
           handleMessageTyping={this.handleMessageTyping}
           acceptMessage={this.acceptMessage}
         />
@@ -124,6 +138,7 @@ const mapStateToProps = function (store) {
     userName: store.chatState.userName,
     roomName: store.chatState.roomName,
     areTyping: store.areTyping,
+    pendingMessage: store.pendingMessage,
     messages: store.messages
   }
 }

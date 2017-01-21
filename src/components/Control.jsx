@@ -7,69 +7,98 @@ class Control extends PureComponent {
   constructor (props) {
     super()
 
+    this.maxSendPower = 500
+
     this.state = {
       power: 100
     }
 
-    this.mouseDown = false
+    this.sendStart = 0
+    this.isSendingMsg = false
+    this.raiseInterval = null
 
-    document.addEventListener('keydown', this.handleKeyDown.bind(this))
+    this.startMessageSend = this.startMessageSend.bind(this)
+
+    document.addEventListener('keypress', this.handleKeyPress.bind(this))
     document.addEventListener('keyup', this.handleKeyUp.bind(this))
   }
-  componentWillUnmount () {
-    document.removeEventListener('keydown')
-  }
-  handleKeyDown (e) {
-    if (this.mouseDown) return
+  handleKeyPress (e) {
+    if (this.isSendingMsg) {
+      return
+    }
     if (e.keyCode === 13) {
-      this.handleMouseDown()
+      this.startMessageSend()
+      e.preventDefault()
     }
   }
   handleKeyUp (e) {
     if (e.keyCode === 13) {
-      this.handleMouseUp()
+      this.handleSendButtonRelease()
     }
   }
   resetPower () {
-    this.mouseDown = false
     this.setState({
       power: 100
     })
   }
+  easeOutElastic (t, b, c, d) {
+    return -c * (t /= d) * (t - 2) + b
+  }
   raisePower () {
-    this.setState({
-      power: this.state.power + 5
-    })
-    if (this.state.power > 500) {
-      store.dispatch({
-        type: 'DELETE_LAST_MSG'
+    var t = new Date().getTime() - this.sendStart
+    if (t > 5000) this.sendStart = new Date().getTime()
+    var newPower = 100 + 500 * this.easeOutElastic(t, 0, 1, 5000)
+
+    if (newPower > this.maxSendPower) {
+      this.abortSendingMessage()
+    } else {
+      this.setState({
+        power: newPower
       })
-      this.resetPower()
     }
   }
-  handleMouseDown () {
+  abortSendingMessage () {
+    this.isSendingMsg = false
+    this.resetPower()
+    this.stopRaising()
+    store.dispatch({
+      type: 'DELETE_PENDING_MSG'
+    })
+  }
+  handleSendButtonDown () {
+    this.startMessageSend()
+  }
+  startMessageSend () {
     if (this.messageInput.textContent === '') return
 
-    this.mouseDown = true
+    this.sendStart = new Date().getTime()
 
-    this.handleSendMessage()
+    this.setPendingMessage()
+    this.repeatRaisingPower()
 
-    this.repeatMouseDown()
+    this.isSendingMsg = true
   }
-  repeatMouseDown () {
-    setTimeout(() => {
-      if (this.mouseDown) {
-        this.raisePower()
-        this.repeatMouseDown()
-        store.dispatch({
-          type: 'SET_LAST_MESSAGE_POWER',
-          power: this.state.power
-        })
-      }
-    }, 2000 / this.state.power)
+  setPendingMessage () {
+    this.props.setPendingMessage({
+      content: this.messageInput.textContent
+    })
   }
-  handleMouseUp () {
-    if (!this.mouseDown) return
+  repeatRaisingPower () {
+    this.raiseInterval = setInterval(() => {
+      this.raisePower()
+      store.dispatch({
+        type: 'UPDATE_PENDING_MSG_POWER',
+        power: this.state.power
+      })
+    }, 100)
+  }
+  handleSendButtonRelease () {
+    if (!this.isSendingMsg) return
+
+    this.stopRaising()
+
+    this.isSendingMsg = false
+
     this.resetPower()
 
     this.messageInput.textContent = ''
@@ -77,10 +106,9 @@ class Control extends PureComponent {
 
     this.props.acceptMessage(this.state.power)
   }
-  handleSendMessage () {
-    this.props.handleSendMessage({
-      content: this.messageInput.textContent
-    })
+  stopRaising () {
+    window.clearInterval(this.raiseInterval)
+    this.raiseInterval = null
   }
   render () {
     return (
@@ -93,8 +121,8 @@ class Control extends PureComponent {
           onInput={this.props.handleMessageTyping}
         />
         <button
-          onMouseUp={(e) => { this.handleMouseUp(e) }}
-          onMouseDown={(e) => { this.handleMouseDown(e) }}
+          onMouseUp={(e) => { this.handleSendButtonRelease(e) }}
+          onMouseDown={(e) => { this.handleSendButtonDown(e) }}
         >
           Send {this.state.power}
         </button>

@@ -4,13 +4,29 @@ import { List, Map } from 'immutable'
 import randomNameGenerator from '../helpers/randomNameGenerator'
 import messagesCreator from '../helpers/messagesCreator'
 
-const chatUserInitialState = {
+const initialChatUserState = {
   userName: randomNameGenerator(),
   usersInRoom: [],
   roomName: 'DogsLovers'
 }
 const initialMessages = List()
-const typingInitialState = List()
+const initialTypingState = List()
+
+const initialPendingMessage = null
+
+export const pendingMessageReducer = (pendingMessage = initialPendingMessage, action) => {
+  switch (action.type) {
+    case 'SET_PENDING_MSG':
+      return Map(action.msg)
+    case 'DELETE_PENDING_MSG':
+      return initialPendingMessage
+    case 'UPDATE_PENDING_MSG_POWER':
+      if (!pendingMessage) return pendingMessage
+      return pendingMessage.set('power', action.power)
+  }
+
+  return pendingMessage
+}
 
 export const messagesReducer = (messages = initialMessages, action) => {
   let msg
@@ -20,12 +36,6 @@ export const messagesReducer = (messages = initialMessages, action) => {
     case 'ADD_MSG':
       msg = messagesCreator.create(action.msg)
       return messages.push(Map(msg))
-    case 'DELETE_LAST_MSG':
-      return messages.pop()
-    case 'SET_LAST_MESSAGE_POWER':
-      return messages.update(-1, (m) => {
-        return m.set('power', action.power)
-      })
     case 'USER_ENTER_THE_ROOM':
       msg = messagesCreator.fromServer(action.userName + ' connected.')
       return messages.push(Map(msg))
@@ -37,7 +47,7 @@ export const messagesReducer = (messages = initialMessages, action) => {
   return messages
 }
 
-export const typingReducer = (state = typingInitialState, action) => {
+export const typingReducer = (state = initialTypingState, action) => {
   switch (action.type) {
     case 'IS_TYPING':
       return state.push(action.userName)
@@ -47,7 +57,7 @@ export const typingReducer = (state = typingInitialState, action) => {
   return state
 }
 
-export const userReducer = (state = chatUserInitialState, action) => {
+export const userReducer = (state = initialChatUserState, action) => {
   switch (action.type) {
     case 'USER_SET_NAME':
       return Object.assign(state, {userName: action.name})
@@ -60,6 +70,7 @@ export const userReducer = (state = chatUserInitialState, action) => {
 const reducers = combineReducers({
   chatState: userReducer,
   messages: messagesReducer,
+  pendingMessage: pendingMessageReducer,
   areTyping: typingReducer
 })
 
