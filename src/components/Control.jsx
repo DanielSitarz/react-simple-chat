@@ -8,6 +8,8 @@ class Control extends PureComponent {
     super()
 
     this.maxSendPower = 500
+    this.sendPowerDiff = this.maxSendPower - 100
+    this.maxSendTime = 3000
 
     this.state = {
       power: 100
@@ -15,24 +17,27 @@ class Control extends PureComponent {
 
     this.sendStart = 0
     this.isSendingMsg = false
-    this.raiseInterval = null
+    this.riseInterval = null
 
     this.startMessageSend = this.startMessageSend.bind(this)
 
+    this.handleKeyUp = this.handleKeyUp.bind(this)
     document.addEventListener('keypress', this.handleKeyPress.bind(this))
-    document.addEventListener('keyup', this.handleKeyUp.bind(this))
   }
   handleKeyPress (e) {
     if (this.isSendingMsg) {
+      e.preventDefault()
       return
     }
     if (e.keyCode === 13) {
       this.startMessageSend()
+      document.addEventListener('keyup', this.handleKeyUp)
       e.preventDefault()
     }
   }
   handleKeyUp (e) {
     if (e.keyCode === 13) {
+      document.removeEventListener('keyup', this.handleKeyUp)
       this.handleSendButtonRelease()
     }
   }
@@ -41,13 +46,14 @@ class Control extends PureComponent {
       power: 100
     })
   }
-  easeOutElastic (t, b, c, d) {
-    return -c * (t /= d) * (t - 2) + b
-  }
-  raisePower () {
+  getNewPower () {
     var t = new Date().getTime() - this.sendStart
-    if (t > 5000) this.sendStart = new Date().getTime()
-    var newPower = 100 + 500 * this.easeOutElastic(t, 0, 1, 5000)
+    if (t > this.maxSendTime) this.sendStart = new Date().getTime()
+
+    return 100 + this.sendPowerDiff * t / this.maxSendTime
+  }
+  risePower () {
+    var newPower = this.getNewPower()
 
     if (newPower > this.maxSendPower) {
       this.abortSendingMessage()
@@ -60,12 +66,13 @@ class Control extends PureComponent {
   abortSendingMessage () {
     this.isSendingMsg = false
     this.resetPower()
-    this.stopRaising()
+    this.stopRising()
     store.dispatch({
       type: 'DELETE_PENDING_MSG'
     })
   }
   handleSendButtonDown () {
+    if (this.isSendingMsg === true) return
     this.startMessageSend()
   }
   startMessageSend () {
@@ -74,7 +81,7 @@ class Control extends PureComponent {
     this.sendStart = new Date().getTime()
 
     this.setPendingMessage()
-    this.repeatRaisingPower()
+    this.repeatRisingPower()
 
     this.isSendingMsg = true
   }
@@ -83,32 +90,35 @@ class Control extends PureComponent {
       content: this.messageInput.textContent
     })
   }
-  repeatRaisingPower () {
-    this.raiseInterval = setInterval(() => {
-      this.raisePower()
-      store.dispatch({
-        type: 'UPDATE_PENDING_MSG_POWER',
-        power: this.state.power
-      })
+  repeatRisingPower () {
+    this.stopRising()
+    this.riseInterval = setInterval(() => {
+      this.risePower()
     }, 100)
   }
   handleSendButtonRelease () {
     if (!this.isSendingMsg) return
 
-    this.stopRaising()
+    this.stopRising()
 
+    store.dispatch({
+      type: 'UPDATE_PENDING_MSG_POWER',
+      power: this.state.power
+    })
+
+    this.props.acceptMessage()
+
+    this.cleanupSend()
+  }
+  cleanupSend () {
     this.isSendingMsg = false
-
-    this.resetPower()
-
     this.messageInput.textContent = ''
     this.messageInput.focus()
-
-    this.props.acceptMessage(this.state.power)
+    this.resetPower()
   }
-  stopRaising () {
-    window.clearInterval(this.raiseInterval)
-    this.raiseInterval = null
+  stopRising () {
+    window.clearInterval(this.riseInterval)
+    this.riseInterval = null
   }
   render () {
     return (
@@ -121,10 +131,13 @@ class Control extends PureComponent {
           onInput={this.props.handleMessageTyping}
         />
         <button
-          onMouseUp={(e) => { this.handleSendButtonRelease(e) }}
+          type='button'
+          onTouchStart={(e) => { this.handleSendButtonDown(e) }}
+          onTouchEnd={(e) => { this.handleSendButtonRelease(e) }}
           onMouseDown={(e) => { this.handleSendButtonDown(e) }}
+          onMouseUp={(e) => { this.handleSendButtonRelease(e) }}
         >
-          Send {this.state.power}
+          Send
         </button>
       </div>
     )

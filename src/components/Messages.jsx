@@ -6,6 +6,10 @@ import style from '../style/Chat.scss'
 import MessagesGroup from './MessagesGroup'
 
 class Messages extends React.Component {
+  constructor () {
+    super()
+    window.addEventListener('resize', () => this.scrollToBottom())
+  }
   groupMessages (msgs = []) {
     return msgs
       .reduce((groups, msg) => {
@@ -24,12 +28,14 @@ class Messages extends React.Component {
         return (<MessagesGroup key={msgs[0].key} msgs={msgs} />)
       })
   }
-
+  scrollToBottom () {
+    this.container.scrollTop = this.container.scrollHeight
+  }
   shouldComponentUpdate (prevProps) {
     return !Immutable.is(this.props.messages, prevProps.messages)
   }
   componentDidUpdate () {
-    this.container.scrollTop = this.container.scrollHeight
+    this.scrollToBottom()
   }
   render () {
     return (

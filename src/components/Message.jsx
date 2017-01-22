@@ -1,5 +1,6 @@
 import React from 'react'
 import chatStyle from '../style/Chat.scss'
+import '../style/animations.scss'
 
 const img = (src) => <img src={src} role='presentation' />
 const link = (src) => <a href={src} target='_blank'>{src}</a>
@@ -50,9 +51,9 @@ class Message extends React.Component {
     return msg
   }
   render () {
-    const {power, content} = this.props
+    const {power, content, style} = this.props
     return (
-      <li className={chatStyle.message} style={{fontSize: power + '%'}}>
+      <li className={[chatStyle.message, style].join(' ')} style={{fontSize: power + '%'}}>
         {this.parseMessage(content, this.state.imageVisible)}
       </li>
     )

@@ -64,7 +64,8 @@ class ChatContainer extends React.Component {
   }
   setPendingMessage (data) {
     let msgData = Object.assign({
-      sender: this.props.userName
+      sender: this.props.userName,
+      style: 'rise'
     }, data)
 
     const newMessage = messagesCreator.create(msgData)
@@ -75,9 +76,10 @@ class ChatContainer extends React.Component {
     })
   }
   acceptMessage () {
-    this.socket.userSentMessage(this.props.pendingMessage.toJS())
+    let pendingMsg = store.getState().pendingMessage.toJS()
+    pendingMsg.style = ''
 
-    let pendingMsg = this.props.pendingMessage.toJS()
+    this.socket.userSentMessage(pendingMsg)
 
     store.dispatch(stoppedTyping(this.props.userName))
     store.dispatch({type: 'DELETE_PENDING_MSG'})
