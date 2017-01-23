@@ -16,6 +16,8 @@ import store from '../store/store'
 import { addMessage, userEnterTheRoom, setMessages, setRoomName, stoppedTyping } from '../store/actionCreators'
 import Socket from '../helpers/Socket'
 
+import '../mo-animations/shapePop'
+
 class ChatContainer extends React.Component {
   constructor (props) {
     super(props)
