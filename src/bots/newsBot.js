@@ -25,10 +25,15 @@ export default function newsBot (msg) {
   var news = {}
 
   const params = msg.slice(6).split(' ')
+  if (params[0] === '') params.pop()
 
   switch (params.length) {
     case 1:
-      showArticleForCategory(params[0])
+      if (params[0] === 'help') {
+        showHelp()
+      } else {
+        showArticleForCategory(params[0])
+      }
       break
     case 2:
       if (!Number.isNaN(parseInt(params[1]))) {
@@ -61,20 +66,25 @@ export default function newsBot (msg) {
 
   function showTopicsForCategory (category) {
     getDataForCategory(category, (data) => {
-      const topics = data.map((e, i) => {
-        return `${i + 1}. ${e.title} `
+      data.forEach((e, i) => {
+        sendMessage(`${i + 1}. ${e.title}`)
       })
-      sendMessage(topics)
     })
   }
 
   function showHelp () {
-
+    sendMessage('!news [category] [article index]')
+    showAvailableCategories()
   }
 
   function categoryDoesntExist (category) {
+    sendMessage(`${category} doesn't exist.`)
+    showAvailableCategories()
+  }
+
+  function showAvailableCategories () {
     const categories = Object.keys(sources).join(', ')
-    sendMessage(`${category} doesn't exist. Available categories are: ${categories}.`)
+    sendMessage(`Available categories are: ${categories}.`)
   }
 
   function topicOutOfBounds () {
