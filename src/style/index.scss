@@ -8,9 +8,11 @@ body{
   font-size: 12px;
 }
 
-body, html, body > div{
-  height: 100%; 
-  width: 100%;
+:global {
+  html, body, #app{
+    height: 100%; 
+    width: 100%;
+  }
 }
 
 *{

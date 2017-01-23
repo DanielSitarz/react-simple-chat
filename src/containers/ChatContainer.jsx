@@ -16,6 +16,8 @@ import store from '../store/store'
 import { addMessage, userEnterTheRoom, setMessages, setRoomName, stoppedTyping } from '../store/actionCreators'
 import Socket from '../helpers/Socket'
 
+import newsBot from '../bots/newsBot'
+
 class ChatContainer extends React.Component {
   constructor (props) {
     super(props)
@@ -33,7 +35,10 @@ class ChatContainer extends React.Component {
   }
   setupSocket () {
     this.socket = new Socket()
-    this.socket.onReceiveMessage = (data) => this.newMessageNotification.notify()
+    this.socket.onReceiveMessage = (data) => {
+      this.newMessageNotification.notify()
+      newsBot(data.content)
+    }
   }
   enterRoom () {
     this.loadMessagesFromLocalStorage()
@@ -83,10 +88,12 @@ class ChatContainer extends React.Component {
 
     store.dispatch(stoppedTyping(this.props.userName))
     store.dispatch({type: 'DELETE_PENDING_MSG'})
-    store.dispatch({type: 'ADD_MSG', msg: pendingMsg})
+    store.dispatch(addMessage(pendingMsg))
 
     this.socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
+
+    newsBot(pendingMsg.content)
   }
   handleMessageTyping (e) {
     if (this.isTypingTimeout) {
