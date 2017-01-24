@@ -2,6 +2,7 @@ import store from '../store/store'
 import { addMessage } from '../store/actionCreators'
 import messagesCreator from '../helpers/messagesCreator'
 
+// Should be abstracted out to more generic class Bot
 export default function newsBot (msg) {
   const BOT_NAME = 'News Bot'
   const CMD = 'news'
