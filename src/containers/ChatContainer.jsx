@@ -16,7 +16,7 @@ import store from '../store/store'
 import { addMessage, userEnterTheRoom, setMessages, setRoomName, stoppedTyping } from '../store/actionCreators'
 import Socket from '../helpers/Socket'
 
-import { NewsBot } from '../bots/NewsBot'
+import bots from '../bots/bots'
 
 class ChatContainer extends React.Component {
   constructor (props) {
@@ -30,8 +30,6 @@ class ChatContainer extends React.Component {
     this.handleMessageTyping = this.handleMessageTyping.bind(this)
     this.acceptMessage = this.acceptMessage.bind(this)
 
-    this.newsBot = new NewsBot()
-
     this.setupSocket()
     this.enterRoom()
   }
@@ -39,7 +37,6 @@ class ChatContainer extends React.Component {
     this.socket = new Socket()
     this.socket.onReceiveMessage = (data) => {
       this.newMessageNotification.notify()
-      this.newsBot.check(data.content)
     }
   }
   enterRoom () {
@@ -83,19 +80,41 @@ class ChatContainer extends React.Component {
     })
   }
   acceptMessage () {
-    let pendingMsg = store.getState().pendingMessage.toJS()
-    pendingMsg.style = ''
+    let acceptedMsg = store.getState().pendingMessage.toJS()
+    acceptedMsg.style = ''
 
-    this.socket.userSentMessage(pendingMsg)
+    this.socket.userSentMessage(acceptedMsg)
 
     store.dispatch(stoppedTyping(this.props.userName))
     store.dispatch({type: 'DELETE_PENDING_MSG'})
-    store.dispatch(addMessage(pendingMsg))
+    store.dispatch(addMessage(acceptedMsg))
 
     this.socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
 
-    this.newsBot.check(pendingMsg.content)
+    this.checkBots(acceptedMsg.content)
+  }
+  checkBots (msg) {
+    bots.forEach((bot) => {
+      let c = bot.check(msg)
+      if (c) {
+        c.then((response) => {
+          if (response) {
+            this.sendBotResponse(bot, response)
+          }
+        })
+      }
+    })
+  }
+  sendBotResponse (bot, response) {
+    let msg = messagesCreator.create({
+      sender: bot.name,
+      content: response
+    })
+    setTimeout(() => {
+      store.dispatch(addMessage(msg))
+      this.socket.userSentMessage(msg)
+    }, 300)
   }
   handleMessageTyping (e) {
     if (this.isTypingTimeout) {
