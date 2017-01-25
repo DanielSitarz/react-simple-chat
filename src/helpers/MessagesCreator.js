@@ -1,5 +1,4 @@
 import store from '../store/store'
-import _ from 'lodash'
 
 const messagesCreator = {
   create: (data) => {
