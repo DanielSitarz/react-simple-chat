@@ -24,7 +24,7 @@ function MessageGroup ({msgs}) {
   return (
     <li className={getStyle(msgs)}>
       <div className={messegesGroupStyle.sender}>
-        <strong>{msgs[0].sender}</strong> - <span>{parseTime(msgs[msgs.length - 1].key)}</span>
+        <strong>{msgs[0].sender}</strong> - <span>{parseTime(msgs[msgs.length - 1].time)}</span>
       </div>
       <ul>
         {
