@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Bot from './Bot'
 
 export default class RandomBot extends Bot {
@@ -38,7 +37,9 @@ export default class RandomBot extends Bot {
   }
 
   randomRange (min, max) {
-    let rand = _.random(min, max)
+    min = parseInt(min)
+    max = parseInt(max)
+    let rand = Math.floor(Math.random() * (max - min + 1)) + min
     this.resolve(rand)
   }
 }
