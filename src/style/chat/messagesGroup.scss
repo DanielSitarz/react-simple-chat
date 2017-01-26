@@ -31,6 +31,13 @@ $defaultMessageBackground: #ECECEC;
         background-color: #90CAF9; 
     }
 
+    &.fromBot{        
+        background-color: #FFECB3;
+        .sender{
+            background-color: #FFE082;          
+        }
+    }
+
     &.fromServer{                
         font-size: 0.6rem;
         font-weight: 700;            

@@ -109,6 +109,7 @@ class ChatContainer extends React.Component {
   sendBotResponse (bot, response) {
     let msg = messagesCreator.create({
       sender: bot.name,
+      isFromBot: true,
       content: response
     })
     setTimeout(() => {

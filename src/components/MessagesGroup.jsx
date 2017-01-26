@@ -10,6 +10,7 @@ const getStyle = (msgs = []) => {
 
   if (msgs.length > 0) {
     if (store.getState().chatState.userName === msgs[0].sender) style.push(messegesGroupStyle.your)
+    if (msgs[0].isFromBot) style.push(messegesGroupStyle.fromBot)
     if (msgs[0].isFromServer) style.push(messegesGroupStyle.fromServer)
   }
 
