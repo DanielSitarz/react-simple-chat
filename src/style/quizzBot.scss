@@ -1,0 +1,24 @@
+.quizzBotQuestion {
+  ul {
+    margin: 5px 0;
+    padding: 0;
+    button {
+      padding: 10px;
+      width: 100%;
+      text-align: left;
+      transition: background 0.4s ease-out;
+      &.correct {
+        background-color: #81C784
+      }
+      &.wrong {
+        background-color: #E57373
+      }
+    }
+    li {
+      margin-bottom: 5px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }    
+  }
+}

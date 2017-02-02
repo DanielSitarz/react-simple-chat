@@ -92,29 +92,22 @@ class ChatContainer extends React.Component {
     this.socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
 
-    this.checkBots(acceptedMsg.content)
+    if (acceptedMsg[0] === '!') {
+      this.checkBots(acceptedMsg.content)
+    }
   }
   checkBots (msg) {
     bots.forEach((bot) => {
-      let c = bot.check(msg)
-      if (c) {
-        c.then((response) => {
-          if (response) {
-            this.sendBotResponse(bot, response)
-          }
-        })
+      if (bot.check(msg)) {
+        this.sendBotResponse(bot.getResponse())
       }
     })
   }
-  sendBotResponse (bot, response) {
-    let msg = messagesCreator.create({
-      sender: bot.name,
-      isFromBot: true,
-      content: response
-    })
-    setTimeout(() => {
-      store.dispatch(addMessage(msg))
-      this.socket.userSentMessage(msg)
+  sendBotResponse (response) {
+    let self = this
+    setTimeout(function delayBotResponse () {
+      store.dispatch(addMessage(response))
+      self.socket.userSentMessage(response)
     }, 300)
   }
   handleMessageTyping (e) {
@@ -152,7 +145,7 @@ class ChatContainer extends React.Component {
     return (
       <div className={style.Chat}>
         <Header roomName={this.props.roomName} userName={this.props.userName} />
-        <Messages messages={messages} />
+        <Messages messages={messages} bots={this.bots} />
         <AreTyping areTyping={this.props.areTyping} />
         <Control
           setPendingMessage={this.setPendingMessage}

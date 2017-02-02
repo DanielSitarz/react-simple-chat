@@ -21,7 +21,7 @@ function parseTime (ms) {
   return new Date(ms).toLocaleTimeString()
 }
 
-function MessageGroup ({msgs}) {
+function MessageGroup ({msgs, bots}) {
   return (
     <li className={getStyle(msgs)}>
       <div className={messegesGroupStyle.sender}>
@@ -31,7 +31,7 @@ function MessageGroup ({msgs}) {
         {
           msgs.map((msg) => {
             return (
-              <Message {...msg} />
+              <Message {...msg} bots={bots} />
             )
           })
         }

@@ -1,16 +1,16 @@
 import Bot from './Bot'
 
 export default class RandomBot extends Bot {
-  constructor () {
-    super('rand', 'Random Bot')
+  constructor (sendResponse) {
+    super('rand', 'Random Bot', sendResponse)
   }
 
-  getResponse (params, resolve) {
-    this.resolve = resolve
+  getResponse (params) {
     this.parseParams(params)
   }
 
   parseParams (params) {
+    console.log(params)
     if (!params) {
       this.showHelp()
       return false
@@ -29,7 +29,7 @@ export default class RandomBot extends Bot {
   }
 
   showHelp () {
-    this.resolve('!rand min max')
+    this.sendResponse(this, '!rand min max')
   }
 
   random (max) {
@@ -40,6 +40,6 @@ export default class RandomBot extends Bot {
     min = parseInt(min)
     max = parseInt(max)
     let rand = Math.floor(Math.random() * (max - min + 1)) + min
-    this.resolve(rand)
+    this.sendResponse(this, rand)
   }
 }

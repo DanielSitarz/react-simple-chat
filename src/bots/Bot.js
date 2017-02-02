@@ -1,29 +1,32 @@
+export const TAG_SYMBOL = '!!'
+
 export default class Bot {
   constructor (cmd, name) {
     this.cmd = cmd
     this.name = name
   }
   check (msg) {
-    this.lastMsg = msg
+    if (msg.indexOf(this.cmd) === -1) {
+      return false
+    }
 
-    if (msg[0] !== '!') return false
-    if (msg.indexOf(this.cmd) === -1) return false
+    this.msg = this.removeCmd(this.cmd, msg)
 
-    msg = this.removeCmd(this.cmd, msg)
-
-    let params = this.getParams(msg)
-
-    return new Promise((resolve, reject) => {
-      this.getResponse(params, resolve)
-    })
+    return true
   }
   removeCmd (cmd, msg) {
     return msg.slice(2 + cmd.length)
   }
   getParams (msg) {
-    return msg.match(/\b(\w+)\b/g)
+    return msg.match(/\b\w*[\w',-]+\w*\b/g)
   }
-  getResponse (params) {
+  parseParams (params) {
 
+  }
+  isTag (msg) {
+    if (msg.match(TAG_SYMBOL)) {
+      return true
+    }
+    return false
   }
 }

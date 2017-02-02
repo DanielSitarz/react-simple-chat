@@ -1,8 +1,8 @@
 import Bot from './Bot'
 
 export default class NewsBot extends Bot {
-  constructor () {
-    super('news', 'News Bot')
+  constructor (sendResponse) {
+    super('news', 'News Bot', sendResponse)
 
     this.API_ADDR = 'https://newsapi.org/v1/articles?source='
     this.API_KEY = '&apiKey=ed34e433fbe2476b958380195cc93017'
@@ -27,8 +27,7 @@ export default class NewsBot extends Bot {
     this.news = {}
   }
 
-  getResponse (params, resolve) {
-    this.resolve = resolve
+  getResponse (params) {
     this.parseParams(params)
   }
 
@@ -58,7 +57,7 @@ export default class NewsBot extends Bot {
   }
 
   showHelp () {
-    this.resolve('!news [category] [article_index or "list"]\n' + this.showAvailableCategories())
+    this.sendResponse(this, '!news [category] [article_index or "list"]\n' + this.showAvailableCategories())
   }
 
   showAvailableCategories () {
@@ -70,7 +69,7 @@ export default class NewsBot extends Bot {
     if (!this.categoryExist(category)) return false
 
     this.getArticles(category, this.sources[category][0], (data) => {
-      this.resolve(data[0].title + ' - ' + data[0].description)
+      this.sendResponse(this, data[0].title + ' - ' + data[0].description)
     })
   }
   showSpecificArticleForCategory (category, index) {
@@ -81,7 +80,7 @@ export default class NewsBot extends Bot {
       if (!data[index]) {
         this.articleOutOfBounds(data.length)
       }
-      this.resolve(data[index].title + ' - ' + data[index].description)
+      this.sendResponse(this, data[index].title + ' - ' + data[index].description)
     })
   }
   showArticlesForCategory (category) {
@@ -92,12 +91,12 @@ export default class NewsBot extends Bot {
       data.forEach((e, i) => {
         msg.push(`${i + 1}. ${e.title}`)
       })
-      this.resolve(msg.join('\n'))
+      this.sendResponse(this, msg.join('\n'))
     })
   }
 
   articleOutOfBounds (maxIndex) {
-    this.resolve(`Article doesn't exist, max article index is ${maxIndex}.`)
+    this.sendResponse(this, `Article doesn't exist, max article index is ${maxIndex}.`)
   }
 
   categoryExist (category) {
@@ -109,7 +108,7 @@ export default class NewsBot extends Bot {
   }
 
   categoryDoesntExist (category) {
-    this.resolve(`Category "${category}" doesn't exist.\n` + this.showAvailableCategories())
+    this.sendResponse(this, `Category "${category}" doesn't exist.\n` + this.showAvailableCategories())
   }
 
   getArticles (category, source, callback) {

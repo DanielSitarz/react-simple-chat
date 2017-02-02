@@ -25,7 +25,7 @@ class Messages extends React.Component {
         return groups
       }, [])
       .map((msgs) => {
-        return (<MessagesGroup key={msgs[0].key} msgs={msgs} />)
+        return (<MessagesGroup key={msgs[0].key} msgs={msgs} bots={this.props.bots} />)
       })
   }
   scrollToBottom () {

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import store from '../store/store'
-
+import pendingMessage from '../modules/pendingMessage'
 import style from '../style/Chat.scss'
 
 class Control extends PureComponent {
@@ -73,7 +73,9 @@ class Control extends PureComponent {
   }
   handleSendButtonDown () {
     if (this.isSendingMsg === true) return
-    this.startMessageSend()
+    if (this.messageInput.textContent === '') return
+    pendingMessage.set(this.messageInput.textContent)
+    // this.startMessageSend()
   }
   startMessageSend () {
     if (this.messageInput.textContent === '') return

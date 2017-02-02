@@ -36,6 +36,11 @@ export const messagesReducer = (messages = initialMessages, action) => {
     case 'ADD_MSG':
       msg = messagesCreator.create(action.msg)
       return messages.push(Map(msg))
+    case 'MODIFY_MSG':
+      return messages.update(
+        messages.findIndex((m) => m.key === action.payload.key),
+        (item) => item.set('content', action.payload.content)
+      )
     case 'USER_ENTER_THE_ROOM':
       msg = messagesCreator.fromServer(action.userName + ' connected.')
       return messages.push(Map(msg))

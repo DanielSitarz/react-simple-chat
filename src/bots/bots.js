@@ -1,5 +1,3 @@
-import NewsBot from './NewsBot'
-import RandomBot from './RandomBot'
-import QuizzBot from './QuizzBot'
+import quizBot from './QuizBot'
 
-export default [new NewsBot(), new RandomBot(), new QuizzBot()]
+export default [quizBot]

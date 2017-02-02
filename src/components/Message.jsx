@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
+
 import chatStyle from '../style/Chat.scss'
 import '../style/animations.scss'
+
+import bots from '../bots/bots'
 
 const img = (src) => <img src={src} role='presentation' />
 const link = (src) => <a href={src} target='_blank'>{src}</a>
@@ -10,7 +13,7 @@ const URLCheckPattern = new RegExp('http://|https://|www.|ftp:')
 const imgCheckPattern = new RegExp('.*(jpeg|jpg|png|gif|bmp)$')
 const youtubeCheckPattern = new RegExp('youtube|youtu.be')
 
-class Message extends React.Component {
+class Message extends Component {
   constructor () {
     super()
     this.state = {
@@ -23,6 +26,12 @@ class Message extends React.Component {
     })
   }
   parseMessage (msg) {
+    for (let i = 0; i < bots.length; i++) {
+      let bot = bots[i]
+      if (bot.isTag(msg)) {
+        return bot.renderTag(msg)
+      }
+    }
     if (URLCheckPattern.test(msg)) {
       if (imgCheckPattern.test(msg)) {
         return (
