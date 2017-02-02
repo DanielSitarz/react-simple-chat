@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import style from '../style/Chat.scss'
 
-/* My Components */
+/* Components */
 import Header from '../components/Header'
 import Messages from '../components/Messages'
 import Control from '../components/Control'
@@ -15,6 +15,7 @@ import messagesCreator from '../helpers/messagesCreator'
 import store from '../store/store'
 import { addMessage, userEnterTheRoom, setMessages, setRoomName, stoppedTyping } from '../store/actionCreators'
 import socket from '../modules/socket'
+import pendingMessage from '../modules/pendingMessage'
 
 import bots from '../bots/bots'
 
@@ -26,20 +27,21 @@ class ChatContainer extends React.Component {
 
     this.newMessageNotification = new NewMessageNotification()
 
-    this.setPendingMessage = this.setPendingMessage.bind(this)
     this.handleMessageTyping = this.handleMessageTyping.bind(this)
-    this.acceptMessage = this.acceptMessage.bind(this)
 
-    this.setupSocket()
+    this.setupCallbacks()
     this.enterRoom()
   }
-  setupSocket () {
+  setupCallbacks () {
     socket.callbacks.add('onReceiveMessage', (data) => {
       this.newMessageNotification.notify()
     })
+    pendingMessage.callbacks.add('onSend', (msg) => {
+      this.checkBots(msg.content)
+    })
   }
   enterRoom () {
-    // this.loadMessagesFromLocalStorage()
+    this.loadMessagesFromLocalStorage()
     store.dispatch(setRoomName(this.props.params.roomName))
     store.dispatch(userEnterTheRoom(this.props.userName))
     socket.userEnterRoom(this.props.userName, this.props.params.roomName)
@@ -65,36 +67,6 @@ class ChatContainer extends React.Component {
   saveMessagesToLocalStorage () {
     window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
   }
-  setPendingMessage (data) {
-    let msgData = Object.assign({
-      sender: this.props.userName,
-      style: 'rise'
-    }, data)
-
-    const newMessage = messagesCreator.create(msgData)
-
-    store.dispatch({
-      type: 'SET_PENDING_MSG',
-      msg: newMessage
-    })
-  }
-  acceptMessage () {
-    let acceptedMsg = store.getState().pendingMessage.toJS()
-    acceptedMsg.style = ''
-
-    socket.userSentMessage(acceptedMsg)
-
-    store.dispatch(stoppedTyping(this.props.userName))
-    store.dispatch({type: 'DELETE_PENDING_MSG'})
-    store.dispatch(addMessage(acceptedMsg))
-
-    socket.userStoppedTyping(this.props.userName)
-    this.clearTypingTimeout()
-
-    if (acceptedMsg[0] === '!') {
-      this.checkBots(acceptedMsg.content)
-    }
-  }
   checkBots (msg) {
     bots.forEach((bot) => {
       if (bot.check(msg)) {
@@ -103,10 +75,9 @@ class ChatContainer extends React.Component {
     })
   }
   sendBotResponse (response) {
-    let self = this
     setTimeout(function delayBotResponse () {
       store.dispatch(addMessage(response))
-      self.socket.userSentMessage(response)
+      socket.userSentMessage(response)
     }, 300)
   }
   handleMessageTyping (e) {
@@ -146,11 +117,7 @@ class ChatContainer extends React.Component {
         <Header roomName={this.props.roomName} userName={this.props.userName} />
         <Messages messages={messages} bots={this.bots} />
         <AreTyping areTyping={this.props.areTyping} />
-        <Control
-          setPendingMessage={this.setPendingMessage}
-          handleMessageTyping={this.handleMessageTyping}
-          acceptMessage={this.acceptMessage}
-        />
+        <Control handleMessageTyping={this.handleMessageTyping} />
       </div>
     )
   }

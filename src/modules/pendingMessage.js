@@ -49,7 +49,7 @@ export default (function pendingMessage () {
   }
 
   function send () {
-    callbacks.callAll('onSend')
+    callbacks.callAll('onSend', message)
 
     message.style = ''
     message.power = power

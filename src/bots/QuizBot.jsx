@@ -50,11 +50,7 @@ export class QuizBot extends Bot {
   checkAnswer (answer) {
     this.isWaitingForAnswer = false
 
-    let ok = answer === this.lastAskedCountryIndex
-    console.log(answer, this.lastAskedCountryIndex)
-
     let msg = this.questionsMessages[this.questionsMessages.length - 1]
-    console.log(msg)
     store.dispatch({
       type: 'MODIFY_MSG',
       payload: {
@@ -63,7 +59,7 @@ export class QuizBot extends Bot {
       }
     })
 
-    let response = (ok)
+    let response = (answer === this.lastAskedCountryIndex)
     ? 'Correct!'
     : `Wrong! Correct answer is ${this.getCountryProperty(this.lastAskedCountryIndex, this.waitingForAnswerAbout)}.`
 
@@ -95,7 +91,7 @@ export class QuizBot extends Bot {
       answersIndices: answersIndices,
       chosenAnswerIndex: answerIndex
     }
-    return TAG_SYMBOL + JSON.stringify(tag) + TAG_SYMBOL
+    return TAG_SYMBOL + JSON.stringify(tag)
   }
 
   createMessage (content) {

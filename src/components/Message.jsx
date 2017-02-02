@@ -26,12 +26,15 @@ class Message extends Component {
     })
   }
   parseMessage (msg) {
-    for (let i = 0; i < bots.length; i++) {
-      let bot = bots[i]
-      if (bot.isTag(msg)) {
-        return bot.renderTag(msg)
+    if (this.props.isFromBot) {
+      for (let i = 0; i < bots.length; i++) {
+        let bot = bots[i]
+        if (bot.isTag(msg)) {
+          return bot.renderTag(msg)
+        }
       }
     }
+
     if (URLCheckPattern.test(msg)) {
       if (imgCheckPattern.test(msg)) {
         return (

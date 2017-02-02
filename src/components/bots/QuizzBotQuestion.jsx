@@ -26,12 +26,22 @@ class QuizzBotQuestion extends Component {
       case CAPITAL: return <span>What is the capital city of <b>{q}?</b></span>
     }
   }
+  getStyle (answer) {
+    if (this.props.chosenAnswerIndex === 900) return ''
+    if (this.props.chosenAnswerIndex === this.props.countryIndex) {
+      if (answer === this.props.chosenAnswerIndex) return style.correct
+    } else {
+      if (answer === this.props.countryIndex) return style.correct
+      if (answer === this.props.chosenAnswerIndex) return style.wrong
+    }
+  }
   render () {
-    const {chosenAnswerIndex, questionType, answerType, countryIndex, answersIndices} = this.props
+    const {questionType, answerType, countryIndex, answersIndices} = this.props
+    /*
     if (chosenAnswerIndex !== 900) {
-      // TODO: buttons are not defined before render...
       this.handleAnswerChoose(this.buttons[chosenAnswerIndex], chosenAnswerIndex)
     }
+    */
     return (
       <div className={style.quizzBotQuestion}>
         <header>{this.renderQuestion(questionType, answerType, countryIndex)}</header>
@@ -41,6 +51,7 @@ class QuizzBotQuestion extends Component {
               return (
                 <li key={i}>
                   <button
+                    className={this.getStyle(answer)}
                     ref={(ref) => { this.buttons[answer] = (ref); if (answer === countryIndex) this.correctButton = ref }}
                     type='button'
                     onClick={(e) => this.handleAnswerChoose(e, answer)}>
