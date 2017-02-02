@@ -14,7 +14,7 @@ import messagesCreator from '../helpers/messagesCreator'
 
 import store from '../store/store'
 import { addMessage, userEnterTheRoom, setMessages, setRoomName, stoppedTyping } from '../store/actionCreators'
-import Socket from '../helpers/Socket'
+import socket from '../modules/socket'
 
 import bots from '../bots/bots'
 
@@ -34,16 +34,15 @@ class ChatContainer extends React.Component {
     this.enterRoom()
   }
   setupSocket () {
-    this.socket = new Socket()
-    this.socket.onReceiveMessage = (data) => {
+    socket.callbacks.add('onReceiveMessage', (data) => {
       this.newMessageNotification.notify()
-    }
+    })
   }
   enterRoom () {
-    this.loadMessagesFromLocalStorage()
+    // this.loadMessagesFromLocalStorage()
     store.dispatch(setRoomName(this.props.params.roomName))
     store.dispatch(userEnterTheRoom(this.props.userName))
-    this.socket.userEnterRoom(this.props.userName, this.props.params.roomName)
+    socket.userEnterRoom(this.props.userName, this.props.params.roomName)
   }
   loadMessagesFromLocalStorage () {
     let loadedMessages = JSON.parse(window.localStorage.getItem(this.props.params.roomName + '_messages'))
@@ -83,13 +82,13 @@ class ChatContainer extends React.Component {
     let acceptedMsg = store.getState().pendingMessage.toJS()
     acceptedMsg.style = ''
 
-    this.socket.userSentMessage(acceptedMsg)
+    socket.userSentMessage(acceptedMsg)
 
     store.dispatch(stoppedTyping(this.props.userName))
     store.dispatch({type: 'DELETE_PENDING_MSG'})
     store.dispatch(addMessage(acceptedMsg))
 
-    this.socket.userStoppedTyping(this.props.userName)
+    socket.userStoppedTyping(this.props.userName)
     this.clearTypingTimeout()
 
     if (acceptedMsg[0] === '!') {
@@ -118,12 +117,12 @@ class ChatContainer extends React.Component {
     }
 
     this.startTypingTimeout()
-    this.socket.userIsTyping(this.props.userName)
+    socket.userIsTyping(this.props.userName)
   }
   startTypingTimeout () {
     this.isTypingTimeout = window.setTimeout(() => {
       store.dispatch(stoppedTyping(this.props.userName))
-      this.socket.userStoppedTyping(this.props.userName)
+      socket.userStoppedTyping(this.props.userName)
       this.clearTypingTimeout()
     }, 3000)
   }

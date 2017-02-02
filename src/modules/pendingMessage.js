@@ -1,11 +1,24 @@
 import store from '../store/store'
+import socket from './socket'
 import {stoppedTyping, addMessage} from '../store/actionCreators'
 import messagesCreator from '../helpers/messagesCreator'
+import callbacksController from './callbacksController'
 
-export default (function () {
+export default (function pendingMessage () {
+  var { userName } = store.getState().chatState
+  var message = ''
+  var power = 100
+  var maxSendPower = 500
+  var sendPowerDiff = maxSendPower - 100
+  var maxSendTime = 3000
+  var sendStartTime = 0
+
+  var riseInterval
+
   function set (msg) {
+    callbacks.callAll('onSet')
     const newMessage = messagesCreator.create({
-      sender: store.getState().chatState.userName,
+      sender: userName,
       style: 'rise',
       content: msg
     })
@@ -14,32 +27,69 @@ export default (function () {
       type: 'SET_PENDING_MSG',
       msg: newMessage
     })
+
+    message = newMessage
+    sendStartTime = new Date().getTime()
+
+    rise()
   }
 
-  function rise() {
+  function rise () {
+    reset()
 
+    riseInterval = window.setInterval(() => {
+      var t = new Date().getTime() - sendStartTime
+      if (t > maxSendTime) {
+        abort()
+        return
+      }
+
+      power = 100 + sendPowerDiff * t / maxSendTime
+    }, 50)
   }
 
   function send () {
-    let acceptedMsg = store.getState().pendingMessage.toJS()
-    acceptedMsg.style = ''
+    callbacks.callAll('onSend')
 
-    this.socket.userSentMessage(acceptedMsg)
+    message.style = ''
+    message.power = power
 
-    store.dispatch(stoppedTyping(this.props.userName))
-    store.dispatch({type: 'DELETE_PENDING_MSG'})
-    store.dispatch(addMessage(acceptedMsg))
+    deleteMessage()
 
-    this.socket.userStoppedTyping(this.props.userName)
-    this.clearTypingTimeout()
+    store.dispatch(addMessage(message))
+    socket.userSentMessage(message)
 
-    if (acceptedMsg[0] === '!') {
-      this.checkBots(acceptedMsg.content)
-    }
+    store.dispatch(stoppedTyping(userName))
+    socket.userStoppedTyping(userName)
+
+    reset()
   }
+
+  function abort () {
+    callbacks.callAll('onAbort')
+    deleteMessage()
+    reset()
+  }
+
+  function deleteMessage () {
+    store.dispatch({type: 'DELETE_PENDING_MSG'})
+  }
+
+  function reset () {
+    if (riseInterval) window.clearInterval(riseInterval)
+    riseInterval = undefined
+    power = 100
+  }
+
+  var callbacks = callbacksController({
+    onSet: [],
+    onAbort: [],
+    onSend: []
+  })
 
   return {
     set: set,
-    send: send
+    send: send,
+    callbacks: { add: callbacks.add, remove: callbacks.remove }
   }
 })()

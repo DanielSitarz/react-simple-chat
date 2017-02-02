@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import store from '../store/store'
 import pendingMessage from '../modules/pendingMessage'
 import style from '../style/Chat.scss'
 
@@ -7,20 +6,12 @@ class Control extends PureComponent {
   constructor (props) {
     super()
 
-    this.maxSendPower = 500
-    this.sendPowerDiff = this.maxSendPower - 100
-    this.maxSendTime = 3000
-
-    this.state = {
-      power: 100
-    }
-
-    this.sendStart = 0
     this.isSendingMsg = false
-    this.riseInterval = null
+
+    pendingMessage.callbacks.add('onAbort', () => { this.abort() })
+    pendingMessage.callbacks.add('onSend', () => { this.cleanupSend() })
 
     this.startMessageSend = this.startMessageSend.bind(this)
-
     this.handleKeyUp = this.handleKeyUp.bind(this)
     document.addEventListener('keypress', this.handleKeyPress.bind(this))
   }
@@ -30,6 +21,7 @@ class Control extends PureComponent {
       return
     }
     if (e.keyCode === 13) {
+      if (this.isSendingMsg || this.aborted) return
       this.startMessageSend()
       document.addEventListener('keyup', this.handleKeyUp)
       e.preventDefault()
@@ -41,86 +33,32 @@ class Control extends PureComponent {
       this.handleSendButtonRelease()
     }
   }
-  resetPower () {
-    this.setState({
-      power: 100
-    })
-  }
-  getNewPower () {
-    var t = new Date().getTime() - this.sendStart
-    if (t > this.maxSendTime) this.sendStart = new Date().getTime()
-
-    return 100 + this.sendPowerDiff * t / this.maxSendTime
-  }
-  risePower () {
-    var newPower = this.getNewPower()
-
-    if (newPower > this.maxSendPower) {
-      this.abortSendingMessage()
-    } else {
-      this.setState({
-        power: newPower
-      })
-    }
-  }
-  abortSendingMessage () {
-    this.isSendingMsg = false
-    this.resetPower()
-    this.stopRising()
-    store.dispatch({
-      type: 'DELETE_PENDING_MSG'
-    })
-  }
   handleSendButtonDown () {
     if (this.isSendingMsg === true) return
     if (this.messageInput.textContent === '') return
-    pendingMessage.set(this.messageInput.textContent)
-    // this.startMessageSend()
-  }
-  startMessageSend () {
-    if (this.messageInput.textContent === '') return
-
-    this.sendStart = new Date().getTime()
-
-    this.setPendingMessage()
-    this.repeatRisingPower()
-
-    this.isSendingMsg = true
-  }
-  setPendingMessage () {
-    this.props.setPendingMessage({
-      content: this.messageInput.textContent
-    })
-  }
-  repeatRisingPower () {
-    this.stopRising()
-    this.riseInterval = setInterval(() => {
-      this.risePower()
-    }, 100)
+    this.startMessageSend()
   }
   handleSendButtonRelease () {
     if (!this.isSendingMsg) return
-
-    this.stopRising()
-
-    store.dispatch({
-      type: 'UPDATE_PENDING_MSG_POWER',
-      power: this.state.power
-    })
-
-    this.props.acceptMessage()
-
-    this.cleanupSend()
+    if (this.aborted) {
+      this.isSendingMsg = false
+      this.aborted = false
+      return
+    }
+    pendingMessage.send()
+  }
+  startMessageSend () {
+    if (this.isSendingMsg === true) return
+    pendingMessage.set(this.messageInput.textContent)
+    this.isSendingMsg = true
   }
   cleanupSend () {
     this.isSendingMsg = false
     this.messageInput.textContent = ''
     this.messageInput.focus()
-    this.resetPower()
   }
-  stopRising () {
-    window.clearInterval(this.riseInterval)
-    this.riseInterval = null
+  abort () {
+    this.aborted = true
   }
   render () {
     return (
