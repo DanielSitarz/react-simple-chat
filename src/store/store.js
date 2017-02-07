@@ -32,13 +32,13 @@ export const messagesReducer = (messages = initialMessages, action) => {
   let msg
   switch (action.type) {
     case 'SET_MSGS':
-      return List(action.msgs) || List()
+      return List(action.msgs.map((m) => Map(m))) || List()
     case 'ADD_MSG':
       msg = messagesCreator.create(action.msg)
       return messages.push(Map(msg))
     case 'MODIFY_MSG':
       return messages.update(
-        messages.findIndex((m) => m.key === action.payload.key),
+        messages.findIndex((m) => m.get('key') === action.payload.id),
         (item) => item.set('content', action.payload.content)
       )
     case 'USER_ENTER_THE_ROOM':

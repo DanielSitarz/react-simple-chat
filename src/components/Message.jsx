@@ -29,8 +29,11 @@ class Message extends Component {
     if (this.props.isFromBot) {
       for (let i = 0; i < bots.length; i++) {
         let bot = bots[i]
-        if (bot.isTag(msg)) {
-          return bot.renderTag(msg)
+        let data = bot.isTag(msg)
+        if (data) {
+          Object.assign(data.payload, {id: this.props.id})
+          let r = bot.parseTag(data)
+          if (r) return r
         }
       }
     }

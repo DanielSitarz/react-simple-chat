@@ -31,7 +31,7 @@ function MessageGroup ({msgs, bots}) {
         {
           msgs.map((msg) => {
             return (
-              <Message {...msg} bots={bots} />
+              <Message {...msg} id={msg.key} bots={bots} />
             )
           })
         }

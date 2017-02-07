@@ -70,7 +70,6 @@ export default (function socket () {
     callbacks.callAll('onTypingStop', userName)
   }
   function _onReceiveMessage (data) {
-    store.dispatch(addMessage(data))
     callbacks.callAll('onReceiveMessage', data)
   }
 

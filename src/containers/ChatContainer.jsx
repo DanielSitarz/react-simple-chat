@@ -34,10 +34,24 @@ class ChatContainer extends React.Component {
   }
   setupCallbacks () {
     socket.callbacks.add('onReceiveMessage', (data) => {
-      this.newMessageNotification.notify()
+      let wasBotModifierTag = false
+      // if received message was just a bot command to modify message
+      bots.some((bot) => {
+        let r = bot.isTag(data.content)
+        if (r && r.type === 'modify') {
+          bot.parseTag(r)
+          wasBotModifierTag = true
+          return true
+        }
+      })
+      // we don't send it to the user
+      if (!wasBotModifierTag) {
+        store.dispatch(addMessage(data))
+        this.newMessageNotification.notify()
+      }
     })
     pendingMessage.callbacks.add('onSend', (msg) => {
-      this.checkBots(msg.content)
+      bots.forEach((bot) => bot.check(msg.content))
     })
   }
   enterRoom () {
@@ -66,19 +80,6 @@ class ChatContainer extends React.Component {
   }
   saveMessagesToLocalStorage () {
     window.localStorage.setItem(this.props.params.roomName + '_messages', JSON.stringify(this.props.messages))
-  }
-  checkBots (msg) {
-    bots.forEach((bot) => {
-      if (bot.check(msg)) {
-        this.sendBotResponse(bot.getResponse())
-      }
-    })
-  }
-  sendBotResponse (response) {
-    setTimeout(function delayBotResponse () {
-      store.dispatch(addMessage(response))
-      socket.userSentMessage(response)
-    }, 300)
   }
   handleMessageTyping (e) {
     if (this.isTypingTimeout) {

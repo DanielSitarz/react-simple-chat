@@ -13,9 +13,13 @@ export default function callbacksController (callbacks) {
     var args = [...arguments]
     args.shift()
     if (args.length) {
-      callbacks[name].forEach((c) => c(...args))
+      callbacks[name].forEach(function callFuncWithArgs (c) {
+        c(...args)
+      })
     } else {
-      callbacks[name].forEach((c) => c())
+      callbacks[name].forEach(function callFunc (c) {
+        c()
+      })
     }
   }
   function exists (name) {

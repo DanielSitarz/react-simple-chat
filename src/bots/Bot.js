@@ -1,3 +1,7 @@
+import socket from '../modules/socket'
+import store from '../store/store'
+import { addMessage } from '../store/actionCreators'
+
 export const TAG_SYMBOL = '!!'
 
 export default class Bot {
@@ -12,6 +16,8 @@ export default class Bot {
 
     this.msg = this.removeCmd(this.cmd, msg)
 
+    this.parseParams(this.getParams(this.msg))
+
     return true
   }
   removeCmd (cmd, msg) {
@@ -24,9 +30,22 @@ export default class Bot {
 
   }
   isTag (msg) {
-    if (msg.match(TAG_SYMBOL)) {
-      return true
+    if (!msg) return
+    if (msg.slice(0, TAG_SYMBOL.length) === TAG_SYMBOL) {
+      let data = JSON.parse(msg.slice(TAG_SYMBOL.length))
+      if (data.cmd === this.cmd) return data
     }
     return false
+  }
+  sendResponse (response) {
+    if (!response) return
+    if (response === '') return
+    window.setTimeout(() => {
+      store.dispatch(addMessage(response))
+      socket.userSentMessage(response)
+    }, 200 + 300 * Math.random())
+  }
+  sendResponseOnlyToOthers (response) {
+    socket.userSentMessage(response)
   }
 }
